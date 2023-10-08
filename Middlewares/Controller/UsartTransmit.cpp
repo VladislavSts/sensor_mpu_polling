@@ -1,13 +1,11 @@
 /*
  * UsartTransmit.cpp
  *
- *  Created on: 8 окт. 2023 г.
+ *  Created on: Oct 8, 2023
  *      Author: Vladislav
  */
 
-#include "tx_api.h"
 #include "main.h"
-#include "BspUart.h"
 #include "SetupController.h"
 
 VOID UsartTransmitThread(ULONG thread_input)

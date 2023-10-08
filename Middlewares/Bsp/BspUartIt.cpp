@@ -8,7 +8,6 @@
 #include "main.h"
 
 #include "SetupController.h"
-#include "tx_api.h"
 
 extern bool StateIdle;
 extern TX_EVENT_FLAGS_GROUP FullDataReceived;
@@ -57,7 +56,7 @@ void DMA1_Channel7_IRQHandler(void)
 	if(LL_DMA_IsActiveFlag_TC7(DMA1))
 	{// ДМА передача в УАРТ завершена
 		LL_DMA_ClearFlag_TC7(DMA1);
-		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_7); // TODO debug transmit
+		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_7); // TODO Off channel 7 (Tx)
 	}
 	else if(LL_DMA_IsActiveFlag_TE7(DMA1))
 	{// ошибка ДМА передачи в УАРТ

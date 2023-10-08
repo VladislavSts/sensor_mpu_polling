@@ -7,6 +7,7 @@
 
 #include "BspUart.h"
 #include "Buffer.h"
+
 //===============================================================================================//
 LineBuffer_c<uint8_t, 256> RxRingBuffer;
 //===============================================================================================//
@@ -87,6 +88,7 @@ void UartInit(Uart_e Index)
 			Priority = LL_DMA_PRIORITY_LOW;
 			RxMode = LL_DMA_MODE_CIRCULAR;
 			TxMode = LL_DMA_MODE_CIRCULAR;
+
 			PeriphOrM2MSrcIncMode = LL_DMA_PERIPH_NOINCREMENT;
 			MemoryOrM2MDstIncMode = LL_DMA_MEMORY_INCREMENT;
 			PeriphOrM2MSrcDataSize = LL_DMA_PDATAALIGN_BYTE;
@@ -120,7 +122,6 @@ void UartInit(Uart_e Index)
 	LL_DMA_SetMemorySize(DMAx, RxChannel, MemoryOrM2MDstDataSize);
 	LL_DMA_SetMemorySize(DMAx, TxChannel, MemoryOrM2MDstDataSize);
 
-
 	USART_InitStruct.BaudRate = ConfigUart[(int) Index].Handle.BaudRate;
 	USART_InitStruct.DataWidth = ConfigUart[(int) Index].Handle.DataWidth;
 	USART_InitStruct.StopBits = ConfigUart[(int) Index].Handle.StopBits;
@@ -150,7 +151,8 @@ void UartInit(Uart_e Index)
 
 }
 //===============================================================================================//
-void UartDeInit(Uart_e Uart) {
+void UartDeInit(Uart_e Uart)
+{
 
 }
 

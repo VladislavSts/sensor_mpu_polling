@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "tx_api.h"
+
 #include "BspGpio.h"
 #include "BspUart.h"
 #include "Buffer.h"

@@ -6,7 +6,7 @@
  */
 
 #include "SetupController.h"
-#include "tx_api.h"
+
 //===============================================================================================//
 /* Размер пула памяти, из которого будет выделяться память для демо-потоков, в байтах */
 #define DEMO_BYTE_POOL_SIZE 10240
@@ -25,6 +25,7 @@ ULONG actual_events;
 TX_THREAD TxBlinkLedThread;
 TX_THREAD TxUsartReceiveThread;
 TX_THREAD TxUsartTransmitThread;
+
 
 VOID BlinkLedThread(ULONG thread_input);
 VOID UsartReceiveThread(ULONG thread_input);

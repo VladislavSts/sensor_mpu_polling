@@ -6,7 +6,6 @@
  */
 
 #include "SetupController.h"
-#include "tx_api.h"
 #include "Bsp.h"
 
 VOID BlinkLedThread(ULONG thread_input)

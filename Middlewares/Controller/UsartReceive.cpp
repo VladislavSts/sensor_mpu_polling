@@ -5,9 +5,7 @@
  *      Author: Vladislav
  */
 
-#include "tx_api.h"
 #include "main.h"
-#include "BspUart.h"
 #include "SetupController.h"
 
 extern TX_EVENT_FLAGS_GROUP FullDataReceived;
