@@ -17,6 +17,10 @@ UCHAR MemoryArea[DEMO_BYTE_POOL_SIZE];
 /* Структура, хранящая информацию о пуле памяти */
 TX_BYTE_POOL BytePool;
 
+/* Группа флагов событий */
+TX_EVENT_FLAGS_GROUP FullDataReceived;
+ULONG actual_events;
+
 /* Массив структур, каждая из которых хранит информацию о потоке (thread control block) */
 TX_THREAD TxBlinkLedThread;
 TX_THREAD TxUsartReceiveThread;
@@ -32,6 +36,9 @@ void tx_application_define(void *first_unused_memory)
 
 /* Создаем byte memory pool, из которого будем выделять память для стека каждого потока */
 	tx_byte_pool_create(&BytePool, (char*)"byte_pool", MemoryArea, DEMO_BYTE_POOL_SIZE);
+
+// СОЗДАНИЕ ГРУППЫ ФЛАГОВ СОБЫТИЙ
+	tx_event_flags_create(&FullDataReceived, "FullDataReceived");
 
 // ВЫДЕЛЕНИЕ СТЕКА ДЛЯ ПОТОКОВ
 	tx_byte_allocate(&BytePool, (VOID**) &BlinkLed, 1024, TX_NO_WAIT);

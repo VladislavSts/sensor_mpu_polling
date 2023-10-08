@@ -7,9 +7,11 @@
 
 #include "main.h"
 
-#include "BspUart.h"
+#include "SetupController.h"
+#include "tx_api.h"
 
 extern bool StateIdle;
+extern TX_EVENT_FLAGS_GROUP FullDataReceived;
 
 void USART2_IRQHandler(void)
 {
@@ -17,7 +19,7 @@ void USART2_IRQHandler(void)
 	if(LL_USART_IsActiveFlag_IDLE(USART2))
 	{
 	    LL_USART_ClearFlag_IDLE(USART2);
-	    StateIdle = true;
+	    tx_event_flags_set(&FullDataReceived, (ULONG)Flags_e::FULL_DATA_RECEIVED, TX_OR);
 
 	    uint32_t length = RX_BUFFER_SIZE - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
 
