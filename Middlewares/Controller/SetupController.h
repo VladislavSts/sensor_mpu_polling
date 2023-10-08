@@ -9,6 +9,7 @@
 
 #include "BspGpio.h"
 #include "BspUart.h"
+#include "Buffer.h"
 
 #define FLAG(x) (1 << x)
 

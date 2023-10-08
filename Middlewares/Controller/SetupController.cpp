@@ -38,7 +38,7 @@ void tx_application_define(void *first_unused_memory)
 	tx_byte_pool_create(&BytePool, (char*)"byte_pool", MemoryArea, DEMO_BYTE_POOL_SIZE);
 
 // СОЗДАНИЕ ГРУППЫ ФЛАГОВ СОБЫТИЙ
-	tx_event_flags_create(&FullDataReceived, "FullDataReceived");
+	tx_event_flags_create(&FullDataReceived, (CHAR*)"FullDataReceived");
 
 // ВЫДЕЛЕНИЕ СТЕКА ДЛЯ ПОТОКОВ
 	tx_byte_allocate(&BytePool, (VOID**) &BlinkLed, 1024, TX_NO_WAIT);

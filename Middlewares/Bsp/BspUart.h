@@ -26,8 +26,6 @@ void USART2_IRQHandler(void);
 }
 #endif
 
-extern uint8_t RxBuffer[RX_BUFFER_SIZE];
-extern uint8_t TxBuffer[TX_BUFFER_SIZE];
 
 enum class Uart_e : uint8_t {
 	UART_2,

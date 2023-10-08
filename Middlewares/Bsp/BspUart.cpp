@@ -6,12 +6,9 @@
  */
 
 #include "BspUart.h"
-
+#include "Buffer.h"
 //===============================================================================================//
-
-uint8_t RxBuffer[RX_BUFFER_SIZE] = {0};
-uint8_t TxBuffer[TX_BUFFER_SIZE] = {0};
-
+LineBuffer_c<uint8_t, 256> RxRingBuffer;
 //===============================================================================================//
 const ConfigUart_t ConfigUart[(int)Uart_e::UART_COUNT] =
 {
@@ -61,6 +58,9 @@ void UartInit(Uart_e Index)
 			  TxDmaChannelIRQ = DMA1_Channel7_IRQn;
 			  UsartIRQ = USART2_IRQn;
 			break;
+
+		default:
+			;
 	}
 
 	  /* DMA interrupt init */
@@ -89,12 +89,15 @@ void UartInit(Uart_e Index)
 			TxDirection = LL_DMA_DIRECTION_MEMORY_TO_PERIPH;
 
 			Priority = LL_DMA_PRIORITY_LOW;
-			Mode = LL_DMA_MODE_NORMAL;
+			Mode = LL_DMA_MODE_CIRCULAR;
 			PeriphOrM2MSrcIncMode = LL_DMA_PERIPH_NOINCREMENT;
 			MemoryOrM2MDstIncMode = LL_DMA_MEMORY_INCREMENT;
 			PeriphOrM2MSrcDataSize = LL_DMA_PDATAALIGN_BYTE;
 			MemoryOrM2MDstDataSize = LL_DMA_MDATAALIGN_BYTE;
 			break;
+
+		default:
+			;
 	}
 
 	LL_APB1_GRP1_EnableClock(Periphs);
@@ -126,7 +129,7 @@ void UartInit(Uart_e Index)
 
 	//Настройка 6 канала DMA (прием данных)
 	LL_USART_EnableIT_IDLE(USARTx);
-	LL_DMA_ConfigAddresses(DMAx, RxChannel, LL_USART_DMA_GetRegAddr(USARTx), (uint32_t)RxBuffer,
+	LL_DMA_ConfigAddresses(DMAx, RxChannel, LL_USART_DMA_GetRegAddr(USARTx), (uint32_t)RxRingBuffer.GetAddressBuffer(),
 		  LL_DMA_GetDataTransferDirection(DMAx, RxChannel));
 	LL_DMA_SetDataLength(DMAx, RxChannel, RX_BUFFER_SIZE);
 	LL_DMA_EnableChannel(DMAx, RxChannel);
