@@ -20,20 +20,20 @@ const ConfigGPIO_t ConfigGpio[(int)Gpio_e::GPIO_COUNT] =
 		.Mode 		= GPIO_MODE_OUTPUT_PP
 	},
 
-// UART_1_TX // ************************************************ //
+// UART_2_TX // ************************************************ //
 	{
 		.Port 		= GPIOA,
-		.Pin 		= GPIO_PIN_9,
+		.Pin 		= GPIO_PIN_2,
 		.Speed 		= GPIO_SPEED_FREQ_HIGH,
 		.StateOn 	= GPIO_PIN_RESET,
 		.StateOff 	= GPIO_PIN_RESET,
 		.Mode 		= GPIO_MODE_AF_PP
 	},
 
-// UART_1_RX // ************************************************ //
+// UART_3_RX // ************************************************ //
 	{
 		.Port 		= GPIOA,
-		.Pin 		= GPIO_PIN_10,
+		.Pin 		= GPIO_PIN_3,
 		.Speed 		= GPIO_SPEED_FREQ_HIGH, // no effect
 		.StateOn 	= GPIO_PIN_RESET,
 		.StateOff 	= GPIO_PIN_RESET,
