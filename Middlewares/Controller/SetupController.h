@@ -1,7 +1,7 @@
 /*
- * Logic.h
+ * SetupController.h
  *
- *  Created on: Oct 6, 2023
+ *  Created on: Oct 8, 2023
  *      Author: Vladislav
  */
 
@@ -11,7 +11,6 @@
 #define _sec(X)		(X*1000)
 #define _ms(X)		(X)
 
-VOID BlinkLedThread(ULONG);
 
 
 

@@ -10,17 +10,37 @@
 #include "main.h"
 #include "BspGpio.h"
 
+#define RX_BUFFER_SIZE 256
+#define TX_BUFFER_SIZE 256
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+void DMA1_Channel6_IRQHandler(void);
+void DMA1_Channel7_IRQHandler(void);
+void USART2_IRQHandler(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+extern uint8_t RxBuffer[RX_BUFFER_SIZE];
+extern uint8_t TxBuffer[TX_BUFFER_SIZE];
+
 enum class Uart_e : uint8_t {
-	UART_1,
 	UART_2,
 	UART_COUNT,
 };
 
 
-//struct ConfigUart_t {
-//	LL_USART_InitTypeDef Handle;
-//	Gpio_e Tx;
-//	Gpio_e Rx;
-//	Gpio_e Dir;
-//};
+struct ConfigUart_t {
+	LL_USART_InitTypeDef Handle;
+	Gpio_e Tx;
+	Gpio_e Rx;
+	Gpio_e Dir;
+};
+
+void UartInit(Uart_e Index);
 
