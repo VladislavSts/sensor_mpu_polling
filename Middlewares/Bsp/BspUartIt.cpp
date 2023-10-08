@@ -57,6 +57,7 @@ void DMA1_Channel7_IRQHandler(void)
 	if(LL_DMA_IsActiveFlag_TC7(DMA1))
 	{// ДМА передача в УАРТ завершена
 		LL_DMA_ClearFlag_TC7(DMA1);
+		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_7); // TODO debug transmit
 	}
 	else if(LL_DMA_IsActiveFlag_TE7(DMA1))
 	{// ошибка ДМА передачи в УАРТ

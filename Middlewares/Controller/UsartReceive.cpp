@@ -19,7 +19,6 @@ VOID UsartReceiveThread(ULONG thread_input)
 
 	while (1)
 	{
-
 		if (tx_event_flags_get(&FullDataReceived, (ULONG)Flags_e::FULL_DATA_RECEIVED,
 				TX_OR_CLEAR, &actual_events, TX_NO_WAIT) == TX_SUCCESS)
 		{

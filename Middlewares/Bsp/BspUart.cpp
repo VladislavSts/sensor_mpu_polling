@@ -35,20 +35,16 @@ void UartInit(Uart_e Index)
 
 	uint32_t Periphs;
 	DMA_TypeDef *DMAx = nullptr;
-	uint32_t RxChannel;
-	uint32_t TxChannel;
-	uint32_t RxDirection;
-	uint32_t TxDirection;
-	uint32_t Priority;
-	uint32_t Mode;
-	uint32_t PeriphOrM2MSrcIncMode;
-	uint32_t MemoryOrM2MDstIncMode;
-	uint32_t PeriphOrM2MSrcDataSize;
-	uint32_t MemoryOrM2MDstDataSize;
+	uint32_t RxChannel, TxChannel,
+	RxDirection, TxDirection,
+	Priority,
+	RxMode, TxMode,
+	PeriphOrM2MSrcIncMode,
+	MemoryOrM2MDstIncMode,
+	PeriphOrM2MSrcDataSize,
+	MemoryOrM2MDstDataSize;
 
-	IRQn_Type RxDmaChannelIRQ;
-	IRQn_Type TxDmaChannelIRQ;
-	IRQn_Type UsartIRQ;
+	IRQn_Type RxDmaChannelIRQ, TxDmaChannelIRQ, UsartIRQ;
 
 	switch (Index) {
 		case Uart_e::UART_2:
@@ -89,7 +85,8 @@ void UartInit(Uart_e Index)
 			TxDirection = LL_DMA_DIRECTION_MEMORY_TO_PERIPH;
 
 			Priority = LL_DMA_PRIORITY_LOW;
-			Mode = LL_DMA_MODE_CIRCULAR;
+			RxMode = LL_DMA_MODE_CIRCULAR;
+			TxMode = LL_DMA_MODE_CIRCULAR;
 			PeriphOrM2MSrcIncMode = LL_DMA_PERIPH_NOINCREMENT;
 			MemoryOrM2MDstIncMode = LL_DMA_MEMORY_INCREMENT;
 			PeriphOrM2MSrcDataSize = LL_DMA_PDATAALIGN_BYTE;
@@ -106,11 +103,23 @@ void UartInit(Uart_e Index)
 	LL_DMA_SetDataTransferDirection(DMAx, TxChannel, TxDirection);
 
 	LL_DMA_SetChannelPriorityLevel(DMAx, RxChannel, Priority);
-	LL_DMA_SetMode(DMAx, RxChannel, Mode);
+	LL_DMA_SetChannelPriorityLevel(DMAx, TxChannel, Priority);
+
+	LL_DMA_SetMode(DMAx, RxChannel, RxMode);
+	LL_DMA_SetMode(DMAx, TxChannel, TxMode);
+
 	LL_DMA_SetPeriphIncMode(DMAx, RxChannel, PeriphOrM2MSrcIncMode);
+	LL_DMA_SetPeriphIncMode(DMAx, TxChannel, PeriphOrM2MSrcIncMode);
+
 	LL_DMA_SetMemoryIncMode(DMAx, RxChannel, MemoryOrM2MDstIncMode);
+	LL_DMA_SetMemoryIncMode(DMAx, TxChannel, MemoryOrM2MDstIncMode);
+
 	LL_DMA_SetPeriphSize(DMAx, RxChannel, PeriphOrM2MSrcDataSize);
+	LL_DMA_SetPeriphSize(DMAx, TxChannel, PeriphOrM2MSrcDataSize);
+
 	LL_DMA_SetMemorySize(DMAx, RxChannel, MemoryOrM2MDstDataSize);
+	LL_DMA_SetMemorySize(DMAx, TxChannel, MemoryOrM2MDstDataSize);
+
 
 	USART_InitStruct.BaudRate = ConfigUart[(int) Index].Handle.BaudRate;
 	USART_InitStruct.DataWidth = ConfigUart[(int) Index].Handle.DataWidth;
