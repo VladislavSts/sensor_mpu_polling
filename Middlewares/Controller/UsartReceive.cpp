@@ -10,10 +10,11 @@
 
 extern TX_EVENT_FLAGS_GROUP FullDataReceived;
 extern ULONG actual_events;
+extern Uart_c Usart2;
 
 VOID UsartReceiveThread(ULONG thread_input)
 {
-	UartInit(Uart_e::UART_2);
+	Usart2.Init();
 
 	while (1)
 	{

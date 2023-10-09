@@ -6,7 +6,10 @@
  */
 
 #include "SetupController.h"
-#include "../Modules/Mpu6050.h"
+#include "Mpu6050.h"
+
+// Создание экземпляра MPU6050_t с помощью данных из ConfigI2C_t
+
 
 VOID PollingSensorThread(ULONG thread_input)
 {

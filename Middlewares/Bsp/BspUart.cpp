@@ -11,25 +11,29 @@
 //===============================================================================================//
 LineBuffer_c<uint8_t, 256> RxRingBuffer;
 //===============================================================================================//
-const ConfigUart_t ConfigUart[(int)Uart_e::UART_COUNT] =
+LL_USART_InitTypeDef ConfigUart2 =
 {
 // UART2 // ********************************************* //
-	{
-		Handle: {
-		  .BaudRate = 115200,
-		  .DataWidth = LL_USART_DATAWIDTH_8B,
-		  .StopBits = LL_USART_STOPBITS_1,
-		  .Parity = LL_USART_PARITY_NONE,
-		  .TransferDirection = LL_USART_DIRECTION_TX_RX,
-		  .HardwareFlowControl = LL_USART_HWCONTROL_NONE,
-		  .OverSampling = LL_USART_OVERSAMPLING_16
-		},
-		.Tx = Gpio_e::UART_1_TX,
-		.Rx = Gpio_e::UART_1_RX,
-	}
+	  .BaudRate = 115200,
+	  .DataWidth = LL_USART_DATAWIDTH_8B,
+	  .StopBits = LL_USART_STOPBITS_1,
+	  .Parity = LL_USART_PARITY_NONE,
+	  .TransferDirection = LL_USART_DIRECTION_TX_RX,
+	  .HardwareFlowControl = LL_USART_HWCONTROL_NONE,
+	  .OverSampling = LL_USART_OVERSAMPLING_16
+};
+
+const Bsp_Uart_Config BspUart2 =
+{
+	.Tx = Gpio_e::UART_1_TX,
+	.Rx = Gpio_e::UART_1_RX,
 };
 //===============================================================================================//
-void UartInit(Uart_e Index)
+
+Uart_c Usart2(&ConfigUart2, &BspUart2);
+
+//===============================================================================================//
+void Uart_c::Init()
 {
 	LL_USART_InitTypeDef USART_InitStruct = {0};
 	USART_TypeDef *USARTx = nullptr;
@@ -47,56 +51,46 @@ void UartInit(Uart_e Index)
 
 	IRQn_Type RxDmaChannelIRQ, TxDmaChannelIRQ, UsartIRQ;
 
-	switch (Index) {
-		case Uart_e::UART_2:
-			  __HAL_RCC_DMA1_CLK_ENABLE();
-			  RxDmaChannelIRQ = DMA1_Channel6_IRQn;
-			  TxDmaChannelIRQ = DMA1_Channel7_IRQn;
-			  UsartIRQ = USART2_IRQn;
-			break;
 
-		default:
-			;
-	}
+	__HAL_RCC_DMA1_CLK_ENABLE(); // TODO сопоставить к USART2
+	RxDmaChannelIRQ = DMA1_Channel6_IRQn;
+	TxDmaChannelIRQ = DMA1_Channel7_IRQn;
+	UsartIRQ = USART2_IRQn;
 
-	  /* DMA interrupt init */
-	  /* interrupt configuration */
-	  NVIC_SetPriority(RxDmaChannelIRQ, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
-	  NVIC_EnableIRQ(RxDmaChannelIRQ);
-	  /* interrupt configuration */
-	  NVIC_SetPriority(TxDmaChannelIRQ, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
-	  NVIC_EnableIRQ(TxDmaChannelIRQ);
 
-	  /* interrupt Init */
-	  NVIC_SetPriority(UsartIRQ, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
-	  NVIC_EnableIRQ(UsartIRQ);
+	/* DMA interrupt init */
+	/* interrupt configuration */
+	NVIC_SetPriority(RxDmaChannelIRQ, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+	NVIC_EnableIRQ(RxDmaChannelIRQ);
+	/* interrupt configuration */
+	NVIC_SetPriority(TxDmaChannelIRQ, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+	NVIC_EnableIRQ(TxDmaChannelIRQ);
+
+	/* interrupt Init */
+	NVIC_SetPriority(UsartIRQ, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+	NVIC_EnableIRQ(UsartIRQ);
 
 	/* Clock configuration */
-	switch(Index) {
-		case Uart_e::UART_2:
 
-			USARTx = USART2;
-			Periphs = LL_APB1_GRP1_PERIPH_USART2;
-			DMAx = DMA1;
-			RxChannel = LL_DMA_CHANNEL_6;
-			TxChannel = LL_DMA_CHANNEL_7;
+	USARTx = USART2; // TODO сопоставить к USART2
+	Periphs = LL_APB1_GRP1_PERIPH_USART2;
+	DMAx = DMA1;
+	RxChannel = LL_DMA_CHANNEL_6;
+	TxChannel = LL_DMA_CHANNEL_7;
 
-			RxDirection = LL_DMA_DIRECTION_PERIPH_TO_MEMORY;
-			TxDirection = LL_DMA_DIRECTION_MEMORY_TO_PERIPH;
+	RxDirection = LL_DMA_DIRECTION_PERIPH_TO_MEMORY;
+	TxDirection = LL_DMA_DIRECTION_MEMORY_TO_PERIPH;
 
-			Priority = LL_DMA_PRIORITY_LOW;
-			RxMode = LL_DMA_MODE_CIRCULAR;
-			TxMode = LL_DMA_MODE_CIRCULAR;
+	Priority = LL_DMA_PRIORITY_LOW;
+	RxMode = LL_DMA_MODE_CIRCULAR;
+	TxMode = LL_DMA_MODE_CIRCULAR;
 
-			PeriphOrM2MSrcIncMode = LL_DMA_PERIPH_NOINCREMENT;
-			MemoryOrM2MDstIncMode = LL_DMA_MEMORY_INCREMENT;
-			PeriphOrM2MSrcDataSize = LL_DMA_PDATAALIGN_BYTE;
-			MemoryOrM2MDstDataSize = LL_DMA_MDATAALIGN_BYTE;
-			break;
+	PeriphOrM2MSrcIncMode = LL_DMA_PERIPH_NOINCREMENT;
+	MemoryOrM2MDstIncMode = LL_DMA_MEMORY_INCREMENT;
+	PeriphOrM2MSrcDataSize = LL_DMA_PDATAALIGN_BYTE;
+	MemoryOrM2MDstDataSize = LL_DMA_MDATAALIGN_BYTE;
 
-		default:
-			;
-	}
+
 
 	LL_APB1_GRP1_EnableClock(Periphs);
 
@@ -121,20 +115,20 @@ void UartInit(Uart_e Index)
 	LL_DMA_SetMemorySize(DMAx, RxChannel, MemoryOrM2MDstDataSize);
 	LL_DMA_SetMemorySize(DMAx, TxChannel, MemoryOrM2MDstDataSize);
 
-	USART_InitStruct.BaudRate = ConfigUart[(int) Index].Handle.BaudRate;
-	USART_InitStruct.DataWidth = ConfigUart[(int) Index].Handle.DataWidth;
-	USART_InitStruct.StopBits = ConfigUart[(int) Index].Handle.StopBits;
-	USART_InitStruct.Parity = ConfigUart[(int) Index].Handle.Parity;
-	USART_InitStruct.TransferDirection = ConfigUart[(int) Index].Handle.TransferDirection;
-	USART_InitStruct.HardwareFlowControl = ConfigUart[(int) Index].Handle.HardwareFlowControl;
-	USART_InitStruct.OverSampling = ConfigUart[(int) Index].Handle.OverSampling;
+	USART_InitStruct.BaudRate = UartHdl->BaudRate;
+	USART_InitStruct.DataWidth = UartHdl->DataWidth;
+	USART_InitStruct.StopBits = UartHdl->StopBits;
+	USART_InitStruct.Parity = UartHdl->Parity;
+	USART_InitStruct.TransferDirection = UartHdl->TransferDirection;
+	USART_InitStruct.HardwareFlowControl = UartHdl->HardwareFlowControl;
+	USART_InitStruct.OverSampling = UartHdl->OverSampling;
 
 	LL_USART_Init(USARTx, &USART_InitStruct);
 	LL_USART_ConfigAsyncMode(USARTx);
 	LL_USART_Enable(USARTx);
 
-	GpioInit(ConfigUart[(int) Index].Tx);
-	GpioInit(ConfigUart[(int) Index].Rx);
+	GpioInit(UartCfg->Tx);
+	GpioInit(UartCfg->Rx);
 
 	//Настройка 6 канала DMA (прием данных)
 	LL_USART_EnableIT_IDLE(USARTx);
@@ -149,10 +143,6 @@ void UartInit(Uart_e Index)
 	LL_USART_EnableDMAReq_TX(USARTx);
 
 }
-//===============================================================================================//
-void UartDeInit(Uart_e Uart)
-{
 
-}
 
 

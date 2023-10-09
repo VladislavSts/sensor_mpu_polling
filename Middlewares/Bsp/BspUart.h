@@ -13,18 +13,20 @@
 #define RX_BUFFER_SIZE 256
 #define TX_BUFFER_SIZE 256
 
-enum class Uart_e : uint8_t {
-	UART_2,
-	UART_COUNT,
-};
-
-
-struct ConfigUart_t {
-	LL_USART_InitTypeDef Handle;
+struct Bsp_Uart_Config {
 	Gpio_e Tx;
 	Gpio_e Rx;
 	Gpio_e Dir;
 };
 
-void UartInit(Uart_e Index);
+class Uart_c {
+private:
+	LL_USART_InitTypeDef* UartHdl;
+	const Bsp_Uart_Config* const UartCfg;
+
+public:
+	Uart_c(LL_USART_InitTypeDef* UartHdl, const Bsp_Uart_Config* UartCfg) : UartHdl(UartHdl), UartCfg(UartCfg) {}
+
+	void Init();
+};
 

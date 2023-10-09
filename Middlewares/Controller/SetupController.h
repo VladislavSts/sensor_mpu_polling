@@ -15,7 +15,6 @@
 #include "BspI2c.h"
 #include "Buffer.h"
 
-
 #define FLAG(x) (1 << x)
 
 /* флаги для группы флагов событий приема данных */
