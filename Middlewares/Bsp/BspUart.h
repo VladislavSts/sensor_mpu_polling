@@ -13,20 +13,6 @@
 #define RX_BUFFER_SIZE 256
 #define TX_BUFFER_SIZE 256
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-void DMA1_Channel6_IRQHandler(void);
-void DMA1_Channel7_IRQHandler(void);
-void USART2_IRQHandler(void);
-
-#ifdef __cplusplus
-}
-#endif
-
-
 enum class Uart_e : uint8_t {
 	UART_2,
 	UART_COUNT,

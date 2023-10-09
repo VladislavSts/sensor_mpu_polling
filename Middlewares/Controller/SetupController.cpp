@@ -25,17 +25,18 @@ ULONG actual_events;
 TX_THREAD TxBlinkLedThread;
 TX_THREAD TxUsartReceiveThread;
 TX_THREAD TxUsartTransmitThread;
-
+TX_THREAD TxPollingSensorThread;
 
 VOID BlinkLedThread(ULONG thread_input);
 VOID UsartReceiveThread(ULONG thread_input);
 VOID UsartTransmitThread(ULONG thread_input);
+VOID PollingSensorThread(ULONG thread_input);
 
 //===============================================================================================//
 void tx_application_define(void *first_unused_memory)
 {
 /* Указатели на память для стека каждого потока */
-	CHAR *BlinkLed, *UsartReceive, *UsartTransmit;
+	CHAR *BlinkLed, *UsartReceive, *UsartTransmit, *PollingSensor;
 
 /* Создаем byte memory pool, из которого будем выделять память для стека каждого потока */
 	tx_byte_pool_create(&BytePool, (char*)"byte_pool", MemoryArea, DEMO_BYTE_POOL_SIZE);
@@ -44,11 +45,11 @@ void tx_application_define(void *first_unused_memory)
 	tx_event_flags_create(&FullDataReceived, (CHAR*)"FullDataReceived");
 
 // ВЫДЕЛЕНИЕ СТЕКА ДЛЯ ПОТОКОВ
-	tx_byte_allocate(&BytePool, (VOID**) &BlinkLed, 1024, TX_NO_WAIT);
-
-	tx_byte_allocate(&BytePool, (VOID**) &UsartReceive, 1024, TX_NO_WAIT);
-
-	tx_byte_allocate(&BytePool, (VOID**) &UsartTransmit, 1024, TX_NO_WAIT);
+	tx_byte_allocate(&BytePool, (VOID**) &BlinkLed, 		1024, TX_NO_WAIT);
+	tx_byte_allocate(&BytePool, (VOID**) &UsartReceive, 	1024, TX_NO_WAIT);
+	tx_byte_allocate(&BytePool, (VOID**) &UsartTransmit, 	1024, TX_NO_WAIT);
+	tx_byte_allocate(&BytePool, (VOID**) &UsartTransmit, 	1024, TX_NO_WAIT);
+	tx_byte_allocate(&BytePool, (VOID**) &PollingSensor, 	1024, TX_NO_WAIT);
 
 // СОЗДАНИЕ ПОТОКОВ
 	tx_thread_create(&TxBlinkLedThread, (char*)"TxBlinkLedThread", BlinkLedThread, 1,
@@ -59,6 +60,9 @@ void tx_application_define(void *first_unused_memory)
 
 	tx_thread_create(&TxUsartTransmitThread, (char*)"TxUsartTransmitThread", UsartTransmitThread, 3,
 			UsartTransmit, 1024, 15, 15, TX_NO_TIME_SLICE, TX_AUTO_START);
+
+	tx_thread_create(&TxPollingSensorThread, (char*)"TxPollingSensorThread", PollingSensorThread, 4,
+			PollingSensor, 1024, 15, 15, TX_NO_TIME_SLICE, TX_AUTO_START);
 }
 
 

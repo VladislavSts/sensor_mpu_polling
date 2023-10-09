@@ -15,7 +15,7 @@ extern LineBuffer_c<uint8_t, 256> RxRingBuffer;
 
 void USART2_IRQHandler(void)
 {
-	/* обработка прерывания по задержке в приеме данных размером в один символ */
+	/* обработка прерывания по таймауту на линии */
 	if(LL_USART_IsActiveFlag_IDLE(USART2))
 	{
 	    LL_USART_ClearFlag_IDLE(USART2);
@@ -23,8 +23,6 @@ void USART2_IRQHandler(void)
 	    RxRingBuffer.WriteIndex = RxRingBuffer.GetVolume() - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
 	}
 }
-
-
 
 
 void DMA1_Channel6_IRQHandler(void)

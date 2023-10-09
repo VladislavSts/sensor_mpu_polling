@@ -11,7 +11,10 @@
 
 #include "BspGpio.h"
 #include "BspUart.h"
+#include "BspUartIt.h"
+#include "BspI2c.h"
 #include "Buffer.h"
+
 
 #define FLAG(x) (1 << x)
 

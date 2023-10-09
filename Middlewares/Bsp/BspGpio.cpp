@@ -40,6 +40,27 @@ const ConfigGPIO_t ConfigGpio[(int)Gpio_e::GPIO_COUNT] =
 		.Mode 		= GPIO_MODE_INPUT,
 		.Pull		= GPIO_NOPULL
 	},
+
+// I2C_1_SDA // ************************************************ //
+	{
+		.Port 		= GPIOB,
+		.Pin 		= GPIO_PIN_7,
+		.Speed 		= GPIO_SPEED_FREQ_HIGH,
+		.StateOn 	= GPIO_PIN_RESET,
+		.StateOff 	= GPIO_PIN_RESET,
+		.Mode 		= GPIO_MODE_AF_OD
+	},
+
+
+// I2C_1_SCL // ************************************************ //
+	{
+		.Port 		= GPIOB,
+		.Pin 		= GPIO_PIN_6,
+		.Speed 		= GPIO_SPEED_FREQ_HIGH,
+		.StateOn 	= GPIO_PIN_RESET,
+		.StateOff 	= GPIO_PIN_RESET,
+		.Mode 		= GPIO_MODE_AF_OD
+	},
 };
 
 //===============================================================================================//

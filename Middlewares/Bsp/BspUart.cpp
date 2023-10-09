@@ -31,7 +31,7 @@ const ConfigUart_t ConfigUart[(int)Uart_e::UART_COUNT] =
 //===============================================================================================//
 void UartInit(Uart_e Index)
 {
-	LL_USART_InitTypeDef USART_InitStruct = {0}; // Подумать как сделать!
+	LL_USART_InitTypeDef USART_InitStruct = {0};
 	USART_TypeDef *USARTx = nullptr;
 
 	uint32_t Periphs;
@@ -49,7 +49,6 @@ void UartInit(Uart_e Index)
 
 	switch (Index) {
 		case Uart_e::UART_2:
-			  /* DMA controller clock enable */
 			  __HAL_RCC_DMA1_CLK_ENABLE();
 			  RxDmaChannelIRQ = DMA1_Channel6_IRQn;
 			  TxDmaChannelIRQ = DMA1_Channel7_IRQn;
