@@ -21,11 +21,13 @@ struct Bsp_Uart_Config {
 
 class Uart_c {
 private:
+	USART_TypeDef *UsartX;
 	LL_USART_InitTypeDef* UartHdl;
 	const Bsp_Uart_Config* const UartCfg;
 
 public:
-	Uart_c(LL_USART_InitTypeDef* UartHdl, const Bsp_Uart_Config* UartCfg) : UartHdl(UartHdl), UartCfg(UartCfg) {}
+	Uart_c(USART_TypeDef *UsartX, LL_USART_InitTypeDef* UartHdl, const Bsp_Uart_Config* UartCfg) :
+		UsartX(UsartX), UartHdl(UartHdl), UartCfg(UartCfg) {}
 
 	void Init();
 };

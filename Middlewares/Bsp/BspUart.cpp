@@ -30,7 +30,7 @@ const Bsp_Uart_Config BspUart2 =
 };
 //===============================================================================================//
 
-Uart_c Usart2(&ConfigUart2, &BspUart2);
+Uart_c Usart2(USART2, &ConfigUart2, &BspUart2);
 
 //===============================================================================================//
 void Uart_c::Init()
@@ -51,12 +51,12 @@ void Uart_c::Init()
 
 	IRQn_Type RxDmaChannelIRQ, TxDmaChannelIRQ, UsartIRQ;
 
-
-	__HAL_RCC_DMA1_CLK_ENABLE(); // TODO сопоставить к USART2
-	RxDmaChannelIRQ = DMA1_Channel6_IRQn;
-	TxDmaChannelIRQ = DMA1_Channel7_IRQn;
-	UsartIRQ = USART2_IRQn;
-
+	if (UsartX == USART2) {
+		__HAL_RCC_DMA1_CLK_ENABLE(); // TODO сопоставить к USART2
+		RxDmaChannelIRQ = DMA1_Channel6_IRQn;
+		TxDmaChannelIRQ = DMA1_Channel7_IRQn;
+		UsartIRQ = USART2_IRQn;
+	}
 
 	/* DMA interrupt init */
 	/* interrupt configuration */
@@ -72,25 +72,25 @@ void Uart_c::Init()
 
 	/* Clock configuration */
 
-	USARTx = USART2; // TODO сопоставить к USART2
-	Periphs = LL_APB1_GRP1_PERIPH_USART2;
-	DMAx = DMA1;
-	RxChannel = LL_DMA_CHANNEL_6;
-	TxChannel = LL_DMA_CHANNEL_7;
+	if (UsartX == USART2) {
+		USARTx = UsartX; // TODO сопоставить к USART2
+		Periphs = LL_APB1_GRP1_PERIPH_USART2;
+		DMAx = DMA1;
+		RxChannel = LL_DMA_CHANNEL_6;
+		TxChannel = LL_DMA_CHANNEL_7;
 
-	RxDirection = LL_DMA_DIRECTION_PERIPH_TO_MEMORY;
-	TxDirection = LL_DMA_DIRECTION_MEMORY_TO_PERIPH;
+		RxDirection = LL_DMA_DIRECTION_PERIPH_TO_MEMORY;
+		TxDirection = LL_DMA_DIRECTION_MEMORY_TO_PERIPH;
 
-	Priority = LL_DMA_PRIORITY_LOW;
-	RxMode = LL_DMA_MODE_CIRCULAR;
-	TxMode = LL_DMA_MODE_CIRCULAR;
+		Priority = LL_DMA_PRIORITY_LOW;
+		RxMode = LL_DMA_MODE_CIRCULAR;
+		TxMode = LL_DMA_MODE_CIRCULAR;
 
-	PeriphOrM2MSrcIncMode = LL_DMA_PERIPH_NOINCREMENT;
-	MemoryOrM2MDstIncMode = LL_DMA_MEMORY_INCREMENT;
-	PeriphOrM2MSrcDataSize = LL_DMA_PDATAALIGN_BYTE;
-	MemoryOrM2MDstDataSize = LL_DMA_MDATAALIGN_BYTE;
-
-
+		PeriphOrM2MSrcIncMode = LL_DMA_PERIPH_NOINCREMENT;
+		MemoryOrM2MDstIncMode = LL_DMA_MEMORY_INCREMENT;
+		PeriphOrM2MSrcDataSize = LL_DMA_PDATAALIGN_BYTE;
+		MemoryOrM2MDstDataSize = LL_DMA_MDATAALIGN_BYTE;
+	}
 
 	LL_APB1_GRP1_EnableClock(Periphs);
 
