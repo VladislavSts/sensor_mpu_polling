@@ -9,6 +9,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <string.h>
 
 enum class Result_e : uint8_t
 {
@@ -25,6 +26,14 @@ private:
 public:
 	size_t ReadIndex = 0;
 	size_t WriteIndex = 0;
+
+	bool IsStringInBuffer(const char* Data) {
+		char* Result =  strstr((const char*)Buffer, Data);
+		if (Result)
+			return true;
+		else
+			return false;
+	}
 
 	uint32_t GetAddressBuffer() {
 		return (uint32_t)Buffer;
@@ -52,7 +61,6 @@ public:
 
 	Result_e Read(type& Data)
 	{
-
 		if (ReadIndex != WriteIndex)
 		{
 			Data = Buffer[ReadIndex++];
@@ -94,5 +102,6 @@ public:
 	void Clear()
 	{
 		ReadIndex = WriteIndex = 0;
+		memset(Buffer, 0, size);
 	}
 };

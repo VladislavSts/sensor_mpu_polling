@@ -11,6 +11,7 @@
 
 #include "BspGpio.h"
 #include "BspUart.h"
+#include "BspI2c.h"
 
 
 

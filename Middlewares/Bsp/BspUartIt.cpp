@@ -6,12 +6,13 @@
  */
 
 #include "main.h"
-
 #include "SetupController.h"
+#include "Buffer.h"
 
-extern bool StateIdle;
-extern TX_EVENT_FLAGS_GROUP FullDataReceived;
-extern LineBuffer_c<uint8_t, 256> RxRingBuffer;
+#include "stm32f1xx_it.h" // TODO для прерываний
+
+extern TX_EVENT_FLAGS_GROUP MyEventGroup;
+extern LineBuffer_c<uint8_t, 256> RxBufferUart2;
 
 void USART2_IRQHandler(void)
 {
@@ -19,8 +20,8 @@ void USART2_IRQHandler(void)
 	if(LL_USART_IsActiveFlag_IDLE(USART2))
 	{
 	    LL_USART_ClearFlag_IDLE(USART2);
-	    tx_event_flags_set(&FullDataReceived, (ULONG)Flags_e::FULL_DATA_RECEIVED, TX_OR);
-	    RxRingBuffer.WriteIndex = RxRingBuffer.GetVolume() - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
+	    tx_event_flags_set(&MyEventGroup, (ULONG)Flags_e::FULL_DATA_RECEIVED, TX_OR);
+	    RxBufferUart2.WriteIndex = RxBufferUart2.GetVolume() - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
 	}
 }
 
@@ -32,12 +33,12 @@ void DMA1_Channel6_IRQHandler(void)
 	if(LL_DMA_IsActiveFlag_HT6(DMA1))
 	{// прерывание по приему половины буфера
 		LL_DMA_ClearFlag_HT6(DMA1);
-		RxRingBuffer.WriteIndex = RxRingBuffer.GetVolume() - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
+		RxBufferUart2.WriteIndex = RxBufferUart2.GetVolume() - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
 	}
 	else if(LL_DMA_IsActiveFlag_TC6(DMA1))
 	{// прерывание по приему всего буфера
 		LL_DMA_ClearFlag_TC6(DMA1);
-		RxRingBuffer.WriteIndex = RxRingBuffer.GetVolume() - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
+		RxBufferUart2.WriteIndex = RxBufferUart2.GetVolume() - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
 	}
 	else if(LL_DMA_IsActiveFlag_TE6(DMA1))
 	{// прерывание по ошибке приема

@@ -173,7 +173,7 @@ public:
 //===============================================================================================//
 	void MPU6050_Read_All()
 	{
-		uint8_t Rec_Data[14];
+		uint8_t Rec_Data[14] = {0};
 		int16_t temp;
 		// Read 14 BYTES of data starting from ACCEL_XOUT_H register
 		HAL_I2C_Mem_Read(I2c, MPU6050_ADDR, ACCEL_XOUT_H_REG, 1, Rec_Data, 14, i2c_timeout);

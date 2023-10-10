@@ -9,7 +9,7 @@
 
 //===============================================================================================//
 /* Размер пула памяти, из которого будет выделяться память для демо-потоков, в байтах */
-#define DEMO_BYTE_POOL_SIZE 5120
+#define DEMO_BYTE_POOL_SIZE 8192
 
 /* Область памяти для пула TX_BYTE_POOL */
 UCHAR MemoryArea[DEMO_BYTE_POOL_SIZE];
@@ -18,7 +18,7 @@ UCHAR MemoryArea[DEMO_BYTE_POOL_SIZE];
 TX_BYTE_POOL BytePool;
 
 /* Группа флагов событий */
-TX_EVENT_FLAGS_GROUP FullDataReceived;
+TX_EVENT_FLAGS_GROUP MyEventGroup;
 ULONG actual_events;
 
 /* Массив структур, каждая из которых хранит информацию о потоке (thread control block) */
@@ -42,7 +42,7 @@ void tx_application_define(void *first_unused_memory)
 	tx_byte_pool_create(&BytePool, (char*)"byte_pool", MemoryArea, DEMO_BYTE_POOL_SIZE);
 
 // СОЗДАНИЕ ГРУППЫ ФЛАГОВ СОБЫТИЙ
-	tx_event_flags_create(&FullDataReceived, (CHAR*)"FullDataReceived");
+	tx_event_flags_create(&MyEventGroup, (CHAR*)"FullDataReceived");
 
 // ВЫДЕЛЕНИЕ СТЕКА ДЛЯ ПОТОКОВ
 	tx_byte_allocate(&BytePool, (VOID**) &BlinkLed, 		1024, TX_NO_WAIT);

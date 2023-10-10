@@ -9,7 +9,7 @@
 #include "Buffer.h"
 
 //===============================================================================================//
-LineBuffer_c<uint8_t, 256> RxRingBuffer;
+LineBuffer_c<uint8_t, 256> RxBufferUart2;
 //===============================================================================================//
 LL_USART_InitTypeDef ConfigUart2 =
 {
@@ -132,9 +132,18 @@ void Uart_c::Init()
 
 	//Настройка 6 канала DMA (прием данных)
 	LL_USART_EnableIT_IDLE(USARTx);
-	LL_DMA_ConfigAddresses(DMAx, RxChannel, LL_USART_DMA_GetRegAddr(USARTx), (uint32_t)RxRingBuffer.GetAddressBuffer(),
-		  LL_DMA_GetDataTransferDirection(DMAx, RxChannel));
-	LL_DMA_SetDataLength(DMAx, RxChannel, RX_BUFFER_SIZE);
+
+	/* TODO Подумать, как сделать лучше */
+	uint32_t DstAddress;
+	uint32_t NbData;
+
+	if (UsartX == USART2) {
+		DstAddress = (uint32_t)RxBufferUart2.GetAddressBuffer(); // TODO прямой доступ, нарушение инкапсуляции, подумать!
+		NbData = RxBufferUart2.GetVolume();
+	}
+
+	LL_DMA_ConfigAddresses(DMAx, RxChannel, LL_USART_DMA_GetRegAddr(USARTx), DstAddress, LL_DMA_GetDataTransferDirection(DMAx, RxChannel));
+	LL_DMA_SetDataLength(DMAx, RxChannel, NbData);
 	LL_DMA_EnableChannel(DMAx, RxChannel);
 	LL_USART_EnableDMAReq_RX(USARTx);
 

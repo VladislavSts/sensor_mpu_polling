@@ -19,8 +19,9 @@ VOID PollingSensorThread(ULONG thread_input)
 
 	while(1)
 	{
+		// Ожидать флаг готовности
+
 		Mpu.MPU6050_Read_All();
-		float Temp = DataMpu.Temperature;
 		sleep(_sec(2));
 	}
 }

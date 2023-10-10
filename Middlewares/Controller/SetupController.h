@@ -9,18 +9,15 @@
 
 #include "tx_api.h"
 
-#include "BspGpio.h"
-#include "BspUart.h"
-#include "BspUartIt.h"
-#include "BspI2c.h"
-#include "Buffer.h"
+#define FLAG(X) (1 << X)
 
-#define FLAG(x) (1 << x)
-
-/* флаги для группы флагов событий приема данных */
+/* флаги для группы флагов событий */
 enum class Flags_e
 {
-	FULL_DATA_RECEIVED	= 1u,
+	FULL_DATA_RECEIVED	 = 1u,
+	FULL_DATA_TRANSMIT   = (FULL_DATA_RECEIVED << 1),
+	SENSOR_IS_READY		 = (FULL_DATA_TRANSMIT << 1),
+	START_POLLING_SENSOR = (SENSOR_IS_READY << 1),
 };
 
 #define sleep(X) 	tx_thread_sleep(X)
