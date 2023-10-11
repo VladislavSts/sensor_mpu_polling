@@ -18,12 +18,14 @@ enum class Flags_e
 	FULL_DATA_TRANSMIT   = (FULL_DATA_RECEIVED << 1),
 	SENSOR_IS_READY		 = (FULL_DATA_TRANSMIT << 1),
 	START_POLLING_SENSOR = (SENSOR_IS_READY << 1),
+	TRANSMIT_DATA_SENSOR = (START_POLLING_SENSOR << 1)
 };
 
 #define sleep(X) 	tx_thread_sleep(X)
 #define _sec(X)		(X*1000)
 #define _ms(X)		(X)
 
-
+extern TX_EVENT_FLAGS_GROUP MyEventGroup;
+extern ULONG actual_events;
 
 

@@ -9,7 +9,8 @@
 #include "Buffer.h"
 
 //===============================================================================================//
-LineBuffer_c<uint8_t, 256> RxBufferUart2;
+LineBuffer_c<char, 256> RxBufferUart2;
+LineBuffer_c<char, 256> TxBufferUart2;
 //===============================================================================================//
 LL_USART_InitTypeDef ConfigUart2 =
 {
@@ -52,7 +53,7 @@ void Uart_c::Init()
 	IRQn_Type RxDmaChannelIRQ, TxDmaChannelIRQ, UsartIRQ;
 
 	if (UsartX == USART2) {
-		__HAL_RCC_DMA1_CLK_ENABLE(); // TODO сопоставить к USART2
+		__HAL_RCC_DMA1_CLK_ENABLE();
 		RxDmaChannelIRQ = DMA1_Channel6_IRQn;
 		TxDmaChannelIRQ = DMA1_Channel7_IRQn;
 		UsartIRQ = USART2_IRQn;
@@ -73,7 +74,7 @@ void Uart_c::Init()
 	/* Clock configuration */
 
 	if (UsartX == USART2) {
-		USARTx = UsartX; // TODO сопоставить к USART2
+		USARTx = UsartX;
 		Periphs = LL_APB1_GRP1_PERIPH_USART2;
 		DMAx = DMA1;
 		RxChannel = LL_DMA_CHANNEL_6;
@@ -132,23 +133,27 @@ void Uart_c::Init()
 
 	//Настройка 6 канала DMA (прием данных)
 	LL_USART_EnableIT_IDLE(USARTx);
+	//Настройка 7 канала DMA (передача данных)
+	LL_DMA_EnableIT_TC(DMAx, TxChannel);
 
 	/* TODO Подумать, как сделать лучше */
-	uint32_t DstAddress;
-	uint32_t NbData;
+	uint32_t RxDstAddress, TxDstAddress;
+	uint32_t RxNbData, TxNbData;
 
 	if (UsartX == USART2) {
-		DstAddress = (uint32_t)RxBufferUart2.GetAddressBuffer(); // TODO прямой доступ, нарушение инкапсуляции, подумать!
-		NbData = RxBufferUart2.GetVolume();
+		RxDstAddress = (uint32_t)RxBufferUart2.GetAddressBuffer(); // TODO прямой доступ, нарушение инкапсуляции, подумать!
+		TxDstAddress = (uint32_t)TxBufferUart2.GetAddressBuffer();
+		RxNbData = RxBufferUart2.GetVolume();
+		TxNbData = TxBufferUart2.GetVolume();
 	}
 
-	LL_DMA_ConfigAddresses(DMAx, RxChannel, LL_USART_DMA_GetRegAddr(USARTx), DstAddress, LL_DMA_GetDataTransferDirection(DMAx, RxChannel));
-	LL_DMA_SetDataLength(DMAx, RxChannel, NbData);
+	LL_DMA_ConfigAddresses(DMAx, RxChannel, LL_USART_DMA_GetRegAddr(USARTx), RxDstAddress, LL_DMA_GetDataTransferDirection(DMAx, RxChannel));
+	LL_DMA_SetDataLength(DMAx, RxChannel, RxNbData);
 	LL_DMA_EnableChannel(DMAx, RxChannel);
 	LL_USART_EnableDMAReq_RX(USARTx);
 
-	//Настройка 7 канала DMA (передача данных)
-	LL_DMA_EnableIT_TC(DMAx, TxChannel);
+    LL_DMA_ConfigAddresses(DMAx, TxChannel, TxDstAddress, LL_USART_DMA_GetRegAddr(USARTx), LL_DMA_GetDataTransferDirection(DMAx, TxChannel));
+    LL_DMA_SetDataLength(DMAx, TxChannel, TxNbData);
 	LL_USART_EnableDMAReq_TX(USARTx);
 
 }

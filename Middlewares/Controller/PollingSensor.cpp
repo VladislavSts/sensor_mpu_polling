@@ -19,10 +19,14 @@ VOID PollingSensorThread(ULONG thread_input)
 
 	while(1)
 	{
-		// Ожидать флаг готовности
-
-		Mpu.MPU6050_Read_All();
-		sleep(_sec(2));
+		if (tx_event_flags_get(&MyEventGroup, (ULONG)Flags_e::START_POLLING_SENSOR,
+		TX_OR_CLEAR, &actual_events, TX_NO_WAIT) == TX_SUCCESS)
+		{
+			Mpu.MPU6050_Read_All();
+			tx_event_flags_set(&MyEventGroup, (ULONG)Flags_e::START_POLLING_SENSOR, TX_OR);
+			tx_event_flags_set(&MyEventGroup, (ULONG)Flags_e::TRANSMIT_DATA_SENSOR, TX_OR);
+		}
+		sleep(_ms(100));
 	}
 }
 

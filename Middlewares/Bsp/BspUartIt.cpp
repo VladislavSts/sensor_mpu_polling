@@ -12,7 +12,7 @@
 #include "stm32f1xx_it.h" // TODO для прерываний
 
 extern TX_EVENT_FLAGS_GROUP MyEventGroup;
-extern LineBuffer_c<uint8_t, 256> RxBufferUart2;
+extern LineBuffer_c<char, 256> RxBufferUart2;
 
 void USART2_IRQHandler(void)
 {
@@ -20,8 +20,14 @@ void USART2_IRQHandler(void)
 	if(LL_USART_IsActiveFlag_IDLE(USART2))
 	{
 	    LL_USART_ClearFlag_IDLE(USART2);
+
 	    tx_event_flags_set(&MyEventGroup, (ULONG)Flags_e::FULL_DATA_RECEIVED, TX_OR);
 	    RxBufferUart2.WriteIndex = RxBufferUart2.GetVolume() - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
+
+	    /* Буфер приема пишет всегда с начала, т.к. с адреса Buffer (GetAddressBuffer()) */
+		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_6);
+		LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_6, (uint32_t)RxBufferUart2.GetVolume());
+		LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_6);
 	}
 }
 

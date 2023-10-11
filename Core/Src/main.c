@@ -96,7 +96,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+  MX_I2C1_Init();
   GpioClocking();
 
   tx_kernel_enter();

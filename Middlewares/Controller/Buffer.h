@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
+#include <stdio.h>
 
 enum class Result_e : uint8_t
 {
@@ -27,15 +28,35 @@ public:
 	size_t ReadIndex = 0;
 	size_t WriteIndex = 0;
 
-	bool IsStringInBuffer(const char* Data) {
-		char* Result =  strstr((const char*)Buffer, Data);
-		if (Result)
-			return true;
-		else
-			return false;
-	}
+    template<size_t strSize>
+    Result_e FindString(const char(&str)[strSize])
+    {
+    	/* Поиск строки в буффере приема */
+        size_t strLen = strSize - 1; // Исключаем завершающий нулевой символ
+        size_t searchIndex = ReadIndex;
 
-	uint32_t GetAddressBuffer() {
+        if (strLen > WriteIndex || WriteIndex == 0)
+        	return Result_e::ERROR;
+
+        while (searchIndex < WriteIndex - strLen + 1)
+        {
+            bool match = true;
+            for (size_t i = 0; i < strLen; ++i)
+            {
+                if (Buffer[(searchIndex + i) % size] != str[i]) {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (match) return Result_e::OK;
+
+            ++searchIndex;
+        }
+        return Result_e::ERROR;
+    }
+
+	uint32_t GetAddressBuffer() const {
 		return (uint32_t)Buffer;
 	}
 

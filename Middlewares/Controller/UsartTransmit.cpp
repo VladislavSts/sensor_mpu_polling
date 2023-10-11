@@ -7,37 +7,46 @@
 
 #include "main.h"
 #include "SetupController.h"
+#include "Buffer.h"
 #include <stdio.h>
 #include <string.h>
 
+extern LineBuffer_c<char, 256> TxBufferUart2;
+
 VOID UsartTransmitThread(ULONG thread_input)
 {
-	constexpr int SizeBuffer = 256;
-	char TransmitBuffer[SizeBuffer] = {0};
-	sprintf(TransmitBuffer, "Hello!\r\n");
-
-    LL_DMA_ConfigAddresses(DMA1, LL_DMA_CHANNEL_7, (uint32_t)TransmitBuffer, LL_USART_DMA_GetRegAddr(USART2),
-    		LL_DMA_GetDataTransferDirection(DMA1, LL_DMA_CHANNEL_7));
-    LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_7, SizeBuffer);
-
     float Temperature = 26.45;
     int Test = 0;
-
     int Offset = 0;
+
+    TxBufferUart2.Clear();
 
 	while (1)
 	{
-	    // Запись значения Temperature в буфер
-		Offset += snprintf(TransmitBuffer + Offset, sizeof(TransmitBuffer) - Offset, "Temperature: %.2f *C \r\n", Temperature);
-	    // Запись значения Test в буфер
-		Offset += snprintf(TransmitBuffer + Offset, sizeof(TransmitBuffer) - Offset, "TestUsart2Transmit: %d \r\n", Test);
+		if (tx_event_flags_get(&MyEventGroup, (ULONG)Flags_e::SENSOR_IS_READY,
+				TX_OR_CLEAR, &actual_events, TX_NO_WAIT) == TX_SUCCESS)
+		{
+			sprintf((char*)TxBufferUart2.GetAddressBuffer(), "stm32ready");
+			LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_7);
+		}
 
-	    LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_7);
+		if (tx_event_flags_get(&MyEventGroup, (ULONG)Flags_e::TRANSMIT_DATA_SENSOR,
+				TX_OR_CLEAR, &actual_events, TX_NO_WAIT) == TX_SUCCESS)
+		{
+			// Запись значения Temperature в буфер
+			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
+					"Temperature: %.2f *C \r\n", Temperature);
+			// Запись значения Test в буфер
+			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
+					"TestUsart2Transmit: %d \r\n", Test);
 
-	    Test++;
-	    Offset = 0;
+			LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_7);
 
-		sleep(_sec(1));
+			Test++;
+			Offset = 0;
+		}
+
+		sleep(_ms(5));
 	}
 }
 
