@@ -49,7 +49,7 @@ void DMA1_Channel6_IRQHandler(void)
 	else if(LL_DMA_IsActiveFlag_TE6(DMA1))
 	{// прерывание по ошибке приема
 		LL_DMA_ClearFlag_TE6(DMA1);
-		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_5);
+		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_6);
 	}
 }
 

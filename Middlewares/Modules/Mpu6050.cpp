@@ -7,6 +7,7 @@
 
 #include "Mpu6050.h"
 #include "tx_api.h"
+#include "stm32f1xx_hal.h"
 
 #define RAD_TO_DEG 57.295779513082320876798154814105
 
@@ -19,7 +20,7 @@
 #define GYRO_CONFIG_REG 	0x1B
 #define GYRO_XOUT_H_REG 	0x43
 
-#define HAL_GetTick() tx_time_get()
+//#define HAL_GetTick() tx_time_get()
 
 // Setup MPU6050
 #define MPU6050_ADDR 0xD0

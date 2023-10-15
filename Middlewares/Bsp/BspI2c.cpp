@@ -20,7 +20,7 @@ I2C_HandleTypeDef I2c1Hdl =
 	  DualAddressMode : I2C_DUALADDRESS_DISABLE,
 	  OwnAddress2 : 0,
 	  GeneralCallMode : I2C_GENERALCALL_DISABLE,
-	  NoStretchMode : I2C_NOSTRETCH_DISABLE, }
+	  NoStretchMode : I2C_NOSTRETCH_DISABLE }
 };
 
 const Bsp_I2c_Config I2c1Cfg =
