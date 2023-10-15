@@ -9,7 +9,7 @@
 
 #include "main.h"
 #include "BspGpio.h"
-
+#include "BspInterface.h"
 
 struct Bsp_I2c_Config
 {
@@ -18,7 +18,7 @@ struct Bsp_I2c_Config
 };
 
 
-class I2c_c {
+class I2c_c : public I2c_i {
 private:
 	I2C_HandleTypeDef* I2cHdl;
 	const Bsp_I2c_Config* const I2cCfg;
@@ -26,7 +26,12 @@ private:
 public:
 	I2c_c(I2C_HandleTypeDef* I2cHdl, const Bsp_I2c_Config* I2cConfig) : I2cHdl(I2cHdl), I2cCfg(I2cConfig) {}
 
-	void Init();
+	~I2c_c() {};
+
+	void Init() override;
+
+	Error_e MemmoryRead(uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize,
+			uint8_t *pData, uint16_t Size) override;
 };
 
 

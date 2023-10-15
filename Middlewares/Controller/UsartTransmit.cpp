@@ -10,8 +10,10 @@
 #include "Buffer.h"
 #include <stdio.h>
 #include <string.h>
+#include "Mpu6050.h"
 
 extern LineBuffer_c<char, 256> TxBufferUart2;
+extern MPU6050_t DataMpu;
 
 VOID UsartTransmitThread(ULONG thread_input)
 {
@@ -35,7 +37,7 @@ VOID UsartTransmitThread(ULONG thread_input)
 		{
 			// Запись значения Temperature в буфер
 			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
-					"Temperature: %.2f *C \r\n", Temperature);
+					"Temperature: %.2f *C \r\n", DataMpu.Temperature);
 			// Запись значения Test в буфер
 			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
 					"TestUsart2Transmit: %d \r\n", Test);
