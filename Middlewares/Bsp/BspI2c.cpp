@@ -13,7 +13,7 @@ I2C_HandleTypeDef I2c1Hdl =
 // I2C1 // ************************************************ //
    Instance : I2C1,
    Init : {
-	  ClockSpeed : 400000,
+	  ClockSpeed : 100000,
 	  DutyCycle : I2C_DUTYCYCLE_2,
 	  OwnAddress1 : 0,
 	  AddressingMode : I2C_ADDRESSINGMODE_7BIT,
@@ -54,7 +54,7 @@ void I2c_c::Init()
 //===============================================================================================//
 Error_e I2c_c::MemmoryRead(uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize, uint8_t *pData, uint16_t Size)
 {
-	if (HAL_I2C_Mem_Read(I2cHdl, DevAddress, MemAddress, MemAddSize, pData, Size, 100u) != HAL_OK)
+	if (HAL_I2C_Mem_Read(I2cHdl, DevAddress, MemAddress, MemAddSize, pData, Size, 1000) != HAL_OK)
 		return Error_e::ERROR;
 
 	return Error_e::OK;

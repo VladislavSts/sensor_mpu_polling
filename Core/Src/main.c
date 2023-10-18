@@ -100,6 +100,7 @@ int main(void)
 //  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 //  MX_I2C1_Init();
+
   GpioClocking();
 
   tx_kernel_enter();
