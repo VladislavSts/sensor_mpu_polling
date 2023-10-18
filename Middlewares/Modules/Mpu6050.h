@@ -2,8 +2,8 @@
  * mpu6050.h
  *
  *  Created on: Nov 13, 2019
- *      Author: Bulanov Konstantin
- *      Refactor: Vladislav
+ *      Author: Vladislav
+ *
  */
 
 #pragma once
