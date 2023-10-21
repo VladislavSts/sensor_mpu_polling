@@ -14,8 +14,6 @@
 extern Uart_c Usart2;
 extern LineBuffer_c<char, 256> RxBufferUart2;
 
-ULONG Time;
-
 VOID UsartReceiveThread(ULONG thread_input)
 {
 	Usart2.Init();

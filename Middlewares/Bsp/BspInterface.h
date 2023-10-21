@@ -27,5 +27,8 @@ public:
 	Error_e virtual MemmoryRead(uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize,
 			uint8_t *pData, uint16_t Size) = 0;
 
+	Error_e virtual MemmoryWrite(uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize,
+				uint8_t *pData, uint16_t Size) = 0;
+
 	virtual ~I2c_i() {};
 };

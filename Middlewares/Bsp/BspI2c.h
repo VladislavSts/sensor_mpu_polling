@@ -32,6 +32,9 @@ public:
 
 	Error_e MemmoryRead(uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize,
 			uint8_t *pData, uint16_t Size) override;
+
+	Error_e MemmoryWrite(uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize,
+				uint8_t *pData, uint16_t Size) override;
 };
 
 

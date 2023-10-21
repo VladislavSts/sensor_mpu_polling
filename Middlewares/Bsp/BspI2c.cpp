@@ -54,7 +54,16 @@ void I2c_c::Init()
 //===============================================================================================//
 Error_e I2c_c::MemmoryRead(uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize, uint8_t *pData, uint16_t Size)
 {
-	if (HAL_I2C_Mem_Read(I2cHdl, DevAddress, MemAddress, MemAddSize, pData, Size, 1000) != HAL_OK)
+	if (HAL_I2C_Mem_Read(I2cHdl, DevAddress, MemAddress, MemAddSize, pData, Size, 100) != HAL_OK)
+		return Error_e::ERROR;
+
+	return Error_e::OK;
+
+}
+
+Error_e I2c_c::MemmoryWrite(uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize, uint8_t *pData, uint16_t Size)
+{
+	if (HAL_I2C_Mem_Write(I2cHdl, DevAddress, MemAddress, MemAddSize, pData, Size, 100) != HAL_OK)
 		return Error_e::ERROR;
 
 	return Error_e::OK;

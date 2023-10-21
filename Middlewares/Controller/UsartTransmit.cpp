@@ -17,7 +17,6 @@ DataMpu MpuData = {0};
 
 VOID UsartTransmitThread(ULONG thread_input)
 {
-    int Test = 0;
     int Offset = 0;
 
     TxBufferUart2.Clear();
@@ -57,7 +56,6 @@ VOID UsartTransmitThread(ULONG thread_input)
 			LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_7, Offset);
 			LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_7);
 
-			Test++;
 			Offset = 0;
 		}
 
