@@ -27,7 +27,7 @@ VOID PollingSensorThread(ULONG thread_input)
 			Mpu.MPU6050_Read_Temp();
 			tx_event_flags_set(&MyEventGroup, (ULONG)Flags_e::TRANSMIT_DATA_SENSOR, TX_OR);
 		}
-		sleep(_ms(500));
+		sleep(_ms(FREQ_POLING_MS));
 	}
 }
 

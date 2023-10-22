@@ -42,7 +42,7 @@ VOID UsartReceiveThread(ULONG thread_input)
 				tx_event_flags_set(&MyEventGroup, ~(ULONG)(Flags_e::START_POLLING_SENSOR), TX_AND);
 			}
 		}
-		sleep(_ms(5));
+		sleep(_ms(2));
 	}
 }
 

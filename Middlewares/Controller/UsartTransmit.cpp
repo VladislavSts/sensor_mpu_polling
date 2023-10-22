@@ -37,19 +37,19 @@ VOID UsartTransmitThread(ULONG thread_input)
 				TX_OR_CLEAR, &actual_events, TX_NO_WAIT) == TX_SUCCESS)
 		{
 			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
-					"Accel_x: %.4f \r\n", MpuData.Ax);
+					"Accel_x:%.4f ", MpuData.Ax);
 			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
-					"Accel_y: %.4f \r\n", MpuData.Ay);
+					"Accel_y:%.4f ", MpuData.Ay);
 			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
-					"Accel_z: %.4f \r\n", MpuData.Az);
+					"Accel_z:%.4f ", MpuData.Az);
 			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
-					"Gyro_x: %.4f \r\n", MpuData.Gx);
+					"Gyro_x:%.4f ", MpuData.Gx);
 			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
-					"Gyro_y: %.4f \r\n", MpuData.Gy);
+					"Gyro_y:%.4f ", MpuData.Gy);
 			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
-					"Gyro_z: %.4f \r\n", MpuData.Gz);
+					"Gyro_z:%.4f ", MpuData.Gz);
 			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
-					"Temperature: %.4f \r\n", MpuData.Temp);
+					"Temperature:%.4f \r\n", MpuData.Temp);
 //			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
 //					"==================== \r\n");
 
@@ -59,7 +59,7 @@ VOID UsartTransmitThread(ULONG thread_input)
 			Offset = 0;
 		}
 
-		sleep(_ms(5));
+		sleep(_ms(2));
 	}
 }
 
