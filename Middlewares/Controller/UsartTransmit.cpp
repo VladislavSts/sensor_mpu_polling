@@ -26,7 +26,7 @@ VOID UsartTransmitThread(ULONG thread_input)
 		if (tx_event_flags_get(&MyEventGroup, (ULONG)Flags_e::SENSOR_IS_READY,
 				TX_OR_CLEAR, &actual_events, TX_NO_WAIT) == TX_SUCCESS)
 		{
-			char Ready[] = "stm32ready";
+			char Ready[] = "stm32ready\r\n";
 			sprintf((char*)TxBufferUart2.GetAddressBuffer(), (const char*)Ready);
 			LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_7, sizeof(Ready));
 			LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_7);
@@ -50,15 +50,12 @@ VOID UsartTransmitThread(ULONG thread_input)
 					"Gyro_z:%.4f ", MpuData.Gz);
 			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
 					"Temperature:%.4f \r\n", MpuData.Temp);
-//			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
-//					"==================== \r\n");
 
 			LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_7, Offset);
 			LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_7);
 
 			Offset = 0;
 		}
-
 		sleep(_ms(2));
 	}
 }

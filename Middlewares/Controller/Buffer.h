@@ -41,15 +41,14 @@ public:
         while (searchIndex < WriteIndex - strLen + 1)
         {
             bool match = true;
-            for (size_t i = 0; i < strLen; ++i)
-            {
+            for (size_t i = 0; i < strLen; ++i) {
                 if (Buffer[(searchIndex + i) % size] != str[i]) {
                     match = false;
                     break;
                 }
             }
-
-            if (match) return Result_e::OK;
+            if (match)
+            	return Result_e::OK;
 
             ++searchIndex;
         }

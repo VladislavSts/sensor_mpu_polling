@@ -29,6 +29,7 @@ public:
 	~I2c_c() {};
 
 	void Init() override;
+	void DeInit() override;
 
 	Error_e MemmoryRead(uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize,
 			uint8_t *pData, uint16_t Size) override;

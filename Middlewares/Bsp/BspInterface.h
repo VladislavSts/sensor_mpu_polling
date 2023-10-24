@@ -24,6 +24,8 @@ public:
 	State_e State = State_e::NOT_INIT;
 
 	void virtual Init() = 0;
+	void virtual DeInit() = 0;
+
 	Error_e virtual MemmoryRead(uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize,
 			uint8_t *pData, uint16_t Size) = 0;
 

@@ -38,7 +38,9 @@ private:
 public:
 	MPU6050Sensor(I2c_i& I2c, DataMpu& Data) : I2c(I2c), Data(Data) {}
 
-	uint8_t MPU6050_Init();
+	State_e State = State_e::NOT_INIT;
+
+	bool MPU6050_Init();
 	void MPU6050_Read_Accel();
 	void MPU6050_Read_Gyro();
 	void MPU6050_Read_Temp();

@@ -21,14 +21,12 @@
 #define WHO_AM_I_REG 0x75
 
 
-uint8_t MPU6050Sensor::MPU6050_Init() {
-	if (I2c.State == State_e::NOT_INIT) {
-		I2c.Init();
-	}
-
+bool MPU6050Sensor::MPU6050_Init() {
+	bool Result;
 	uint8_t check = 0;
 	uint8_t Data = 0;
 
+	I2c.Init();
 	// check device ID WHO_AM_I
 	I2c.MemmoryRead(MPU6050_ADDR, WHO_AM_I_REG, 1, &check, 1);
 
@@ -51,9 +49,16 @@ uint8_t MPU6050Sensor::MPU6050_Init() {
 		// XG_ST=0,YG_ST=0,ZG_ST=0, FS_SEL=0 -> � 250 �/s
 		Data = 0x00;
 		I2c.MemmoryWrite(MPU6050_ADDR, GYRO_CONFIG_REG, 1, &Data, 1);
-		return 0;
+
+		State = State_e::INIT;
+		Result = false;
 	}
-	return 1;
+	else {
+		Result = true; // ошибка инициализации
+		I2c.DeInit();
+	}
+
+	return Result;
 }
 //===============================================================================================//
 void MPU6050Sensor::MPU6050_Read_Accel() {

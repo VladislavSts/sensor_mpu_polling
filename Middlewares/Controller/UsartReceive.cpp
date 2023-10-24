@@ -9,10 +9,12 @@
 #include "BspUart.h"
 #include "SetupController.h"
 #include "Buffer.h"
+#include "Mpu6050.h"
 #include <string.h>
 
 extern Uart_c Usart2;
 extern LineBuffer_c<char, 256> RxBufferUart2;
+extern MPU6050Sensor Mpu;
 
 VOID UsartReceiveThread(ULONG thread_input)
 {
@@ -29,16 +31,16 @@ VOID UsartReceiveThread(ULONG thread_input)
 //			/* Обработчик принятия полного пакета данных */
 			Command = RxBufferUart2.FindString("start");
 			if (Command == Result_e::OK) {
-				tx_event_flags_set(&MyEventGroup, (ULONG)Flags_e::SENSOR_IS_READY, TX_OR);
+				tx_event_flags_set(&MyEventGroup, (ULONG)Flags_e::COMMAND_START, TX_OR);
 			}
 
 			Command = RxBufferUart2.FindString("getdata");
-			if (Command == Result_e::OK) {
+			if (Command == Result_e::OK && Mpu.State == State_e::INIT) {
 				tx_event_flags_set(&MyEventGroup, (ULONG)Flags_e::START_POLLING_SENSOR, TX_OR);
 			}
 
 			Command = RxBufferUart2.FindString("stopdata");
-			if (Command == Result_e::OK) {
+			if (Command == Result_e::OK && Mpu.State == State_e::INIT) {
 				tx_event_flags_set(&MyEventGroup, ~(ULONG)(Flags_e::START_POLLING_SENSOR), TX_AND);
 			}
 		}

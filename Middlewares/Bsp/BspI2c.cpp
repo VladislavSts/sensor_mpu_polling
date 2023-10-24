@@ -47,8 +47,24 @@ void I2c_c::Init()
 		if (HAL_I2C_Init(&I2c1Hdl) != HAL_OK) {
 			Error_Handler();
 		}
-
 		State = State_e::INIT;
+	}
+}
+
+void I2c_c::DeInit()
+{
+	if (State == State_e::INIT) {
+		GpioDeinit(I2c1Cfg.SDA);
+		GpioDeinit(I2c1Cfg.SCL);
+
+		if (I2cHdl->Instance == I2C1) {
+			__HAL_RCC_I2C1_CLK_DISABLE();
+		}
+
+		if (HAL_I2C_DeInit(&I2c1Hdl) != HAL_OK) {
+			Error_Handler();
+		}
+		State = State_e::NOT_INIT;
 	}
 }
 //===============================================================================================//
