@@ -141,8 +141,8 @@ void Uart_c::Init()
 	uint32_t RxNbData, TxNbData;
 
 	if (UsartX == USART2) {
-		RxDstAddress = RxBufferUart2.GetAddressBuffer(); // TODO прямой доступ, нарушение инкапсуляции, подумать!
-		TxDstAddress = TxBufferUart2.GetAddressBuffer();
+		RxDstAddress = (uint32_t)RxBufferUart2.GetAddressBuffer(); // TODO прямой доступ, нарушение инкапсуляции, подумать!
+		TxDstAddress = (uint32_t)TxBufferUart2.GetAddressBuffer();
 		RxNbData = RxBufferUart2.GetVolume();
 		TxNbData = TxBufferUart2.GetVolume();
 	}
