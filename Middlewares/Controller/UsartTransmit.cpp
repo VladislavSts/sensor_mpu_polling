@@ -37,7 +37,7 @@ VOID UsartTransmitThread(ULONG thread_input)
 				TX_OR_CLEAR, &actual_events, TX_NO_WAIT) == TX_SUCCESS)
 		{
 			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
-					"Accel_x:%.4f ", MpuData.Ax);
+					"TimeGet(ms): %ld Accel_x:%.4f ", tx_time_get(), MpuData.Ax);
 			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
 					"Accel_y:%.4f ", MpuData.Ay);
 			Offset += snprintf((char*)TxBufferUart2.GetAddressBuffer() + Offset, TxBufferUart2.GetVolume() - Offset,
@@ -56,7 +56,7 @@ VOID UsartTransmitThread(ULONG thread_input)
 
 			Offset = 0;
 		}
-		sleep(_ms(2));
+		sleep(_ms(1));
 	}
 }
 

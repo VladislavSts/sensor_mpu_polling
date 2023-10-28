@@ -12,11 +12,11 @@ const ConfigGPIO_t ConfigGpio[(int)Gpio_e::GPIO_COUNT] =
 {
 // LED // ************************************************ //
 	{
-		.Port 		= GPIOC,
-		.Pin 		= GPIO_PIN_13,
+		.Port 		= GPIOB,
+		.Pin 		= GPIO_PIN_2,
 		.Speed 		= GPIO_SPEED_LOW,
-		.StateOn 	= GPIO_PIN_RESET,
-		.StateOff 	= GPIO_PIN_SET,
+		.StateOn 	= GPIO_PIN_SET,
+		.StateOff 	= GPIO_PIN_RESET,
 		.Mode 		= GPIO_MODE_OUTPUT_PP
 	},
 

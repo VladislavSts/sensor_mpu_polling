@@ -26,8 +26,6 @@ enum class Flags_e
 #define _sec(X)		(X*1000)
 #define _ms(X)		(X)
 
-#define FREQ_POLING_MS (30)
-
 extern TX_EVENT_FLAGS_GROUP MyEventGroup;
 extern ULONG actual_events;
 

@@ -53,16 +53,16 @@ void tx_application_define(void *first_unused_memory)
 
 // СОЗДАНИЕ ПОТОКОВ
 	tx_thread_create(&TxBlinkLedThread, (char*)"TxBlinkLedThread", BlinkLedThread, 1,
-			BlinkLed, 1024, 15, 15, TX_NO_TIME_SLICE, TX_AUTO_START);
+			BlinkLed, 1024, 10, 10, TX_NO_TIME_SLICE, TX_AUTO_START);
 
 	tx_thread_create(&TxUsartReceiveThread, (char*)"TxUsartReceiveThread", UsartReceiveThread, 2,
-			UsartReceive, 1024, 15, 15, TX_NO_TIME_SLICE, TX_AUTO_START);
+			UsartReceive, 1024, 10, 10, TX_NO_TIME_SLICE, TX_AUTO_START);
 
 	tx_thread_create(&TxUsartTransmitThread, (char*)"TxUsartTransmitThread", UsartTransmitThread, 3,
-			UsartTransmit, 1024, 15, 15, TX_NO_TIME_SLICE, TX_AUTO_START);
+			UsartTransmit, 1024, 10, 10, TX_NO_TIME_SLICE, TX_AUTO_START);
 
 	tx_thread_create(&TxPollingSensorThread, (char*)"TxPollingSensorThread", PollingSensorThread, 4,
-			PollingSensor, 1024, 15, 15, TX_NO_TIME_SLICE, TX_AUTO_START);
+			PollingSensor, 1024, 10, 10, TX_NO_TIME_SLICE, TX_AUTO_START);
 }
 
 
