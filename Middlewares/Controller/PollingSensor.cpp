@@ -38,7 +38,7 @@ VOID PollingSensorThread(ULONG thread_input)
 			tx_event_flags_set(&MyEventGroup, (ULONG)Flags_e::TRANSMIT_DATA_SENSOR, TX_OR);
 		}
 
-		sleep(_ms(1));
+		sleep(_ms(20));
 	}
 }
 

@@ -10,7 +10,7 @@
 
 //===============================================================================================//
 LineBuffer_c<char, 256> RxBufferUart2;
-LineBuffer_c<char, 256> TxBufferUart2;
+LineBuffer_c<char, 512> TxBufferUart2;
 //===============================================================================================//
 LL_USART_InitTypeDef ConfigUart2 =
 {

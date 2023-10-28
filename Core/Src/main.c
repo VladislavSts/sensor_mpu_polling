@@ -103,6 +103,8 @@ int main(void)
 
   GpioClocking();
 
+  HAL_SuspendTick();
+
   tx_kernel_enter();
   /* USER CODE END 2 */
 
