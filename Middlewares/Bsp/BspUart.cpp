@@ -10,7 +10,7 @@
 
 //===============================================================================================//
 LineBuffer_c<char, 256> RxBufferUart2;
-LineBuffer_c<char, 512> TxBufferUart2;
+LineBuffer_c<char, 256> TxBufferUart2;
 //===============================================================================================//
 LL_USART_InitTypeDef ConfigUart2 =
 {
@@ -26,8 +26,8 @@ LL_USART_InitTypeDef ConfigUart2 =
 
 const Bsp_Uart_Config BspUart2 =
 {
-	.Tx = Gpio_e::UART_1_TX,
-	.Rx = Gpio_e::UART_1_RX,
+	.Tx = Gpio_e::UART_2_TX,
+	.Rx = Gpio_e::UART_2_RX,
 };
 //===============================================================================================//
 

@@ -30,7 +30,7 @@ const ConfigGPIO_t ConfigGpio[(int)Gpio_e::GPIO_COUNT] =
 		.Mode 		= GPIO_MODE_AF_PP
 	},
 
-// UART_3_RX // ************************************************ //
+// UART_2_RX // ************************************************ //
 	{
 		.Port 		= GPIOA,
 		.Pin 		= GPIO_PIN_3,
