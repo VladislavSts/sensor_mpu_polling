@@ -9,21 +9,16 @@
 #include "Mpu6050.h"
 #include "BspI2c.h"
 
-extern DataMpu MpuData;
+DataMpu MpuData = {0};
 extern I2c_c I2c1;
 MPU6050Sensor Mpu(I2c1, MpuData);
-
-extern TX_QUEUE TxUsartTransmitQueue;
-extern TX_QUEUE TxPollingSensorQueue;
-extern TX_QUEUE TxBllinkLedQueue;
 
 VOID PollingSensorThread(ULONG thread_input)
 {
 	UINT Result;
-	Command_e Command;
 	ULONG TimeWait = TX_WAIT_FOREVER;
+	Command_e Command;
 	bool StartPoling = false;
-	Command_e CommandTo;
 
 	while(1)
 	{
@@ -34,28 +29,26 @@ VOID PollingSensorThread(ULONG thread_input)
 			switch(Command)
 			{
 				case Command_e::COMMAND_START:
-					if (Mpu.MPU6050_Init()) {
+					Mpu.MPU6050_Init();
+					if (Mpu.State != State_e::INIT) {
 						// ошибка инициализации сенсора
 					}
 					else {
 						// сенсор успешно инициализирован
-						CommandTo = Command_e::SENSOR_IS_READY;
-						tx_queue_send(&TxUsartTransmitQueue, &CommandTo, TX_NO_WAIT);
+						SendCommand(TxUsartTransmitQueue, Command_e::SENSOR_IS_READY);
 					}
 					break;
 
 				case Command_e::START_POLLING_SENSOR:
-					TimeWait = 15;
+					TimeWait = 20;
 					StartPoling = true;
-					CommandTo = Command_e::START_POLLING_SENSOR;
-					tx_queue_send(&TxBllinkLedQueue, &CommandTo, TX_NO_WAIT);
+					SendCommand(TxBllinkLedQueue, Command_e::START_POLLING_SENSOR);
 					break;
 
 				case Command_e::STOP_POLLING_SENSOR:
 					TimeWait = TX_WAIT_FOREVER;
 					StartPoling = false;
-					CommandTo = Command_e::STOP_POLLING_SENSOR;
-					tx_queue_send(&TxBllinkLedQueue, &CommandTo, TX_NO_WAIT);
+					SendCommand(TxBllinkLedQueue, Command_e::STOP_POLLING_SENSOR);
 					Mpu.MPU6050_DeInit();
 					break;
 
@@ -64,14 +57,12 @@ VOID PollingSensorThread(ULONG thread_input)
 			}
 		}
 		else {
-			/* Не получили сообщение из очереди */
+			/* Не получили сообщение из очереди, опрашиваем датчик */
 			if (StartPoling) {
-				Mpu.MPU6050_Read_Accel();
-				Mpu.MPU6050_Read_Gyro();
-				Mpu.MPU6050_Read_Temp();
-
-				CommandTo = Command_e::TRANSMIT_DATA_SENSOR;
-				tx_queue_send(&TxUsartTransmitQueue, &CommandTo, TX_NO_WAIT);
+				Error_e Result;
+				Result = Mpu.ReadAllData();
+				if (Result == Error_e::OK)
+					SendCommand(TxUsartTransmitQueue, Command_e::TRANSMIT_DATA_SENSOR);
 			}
 		}
 	}

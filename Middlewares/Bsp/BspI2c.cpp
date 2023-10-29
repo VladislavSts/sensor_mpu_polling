@@ -13,7 +13,7 @@ I2C_HandleTypeDef I2c1Hdl =
 // I2C1 // ************************************************ //
    Instance : I2C1,
    Init : {
-	  ClockSpeed : 400000,
+	  ClockSpeed : 100000,
 	  DutyCycle : I2C_DUTYCYCLE_2,
 	  OwnAddress1 : 0,
 	  AddressingMode : I2C_ADDRESSINGMODE_7BIT,

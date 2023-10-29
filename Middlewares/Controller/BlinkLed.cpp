@@ -8,8 +8,6 @@
 #include "SetupController.h"
 #include "Bsp.h"
 
-extern TX_QUEUE TxBllinkLedQueue;
-
 VOID BlinkLedThread(ULONG thread_input)
 {
 	GpioInit(Gpio_e::LED);

@@ -27,4 +27,13 @@ enum class Command_e : uint8_t
 
 extern ULONG actual_events;
 
+#define SendCommand(queue, command) \
+    do { \
+        Command_e cmd = command; \
+        tx_queue_send(&queue, &cmd, 1000); \
+    } while(0)
 
+extern TX_QUEUE TxBllinkLedQueue;
+extern TX_QUEUE TxUsartReceiveQueue;
+extern TX_QUEUE TxUsartTransmitQueue;
+extern TX_QUEUE TxPollingSensorQueue;
