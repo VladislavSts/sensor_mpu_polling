@@ -17,8 +17,8 @@ extern "C"
 enum class Gpio_e : uint8_t {
 	LED,
 
-	UART_2_TX,
-	UART_2_RX,
+	UART_1_TX,
+	UART_1_RX,
 
 	I2C_1_SDA,
 	I2C_1_SCL,

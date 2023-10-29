@@ -41,7 +41,6 @@ public:
 	State_e State = State_e::NOT_INIT;
 
 	bool MPU6050_Init();
-	bool MPU6050_DeInit();
 	void MPU6050_Read_Accel();
 	void MPU6050_Read_Gyro();
 	void MPU6050_Read_Temp();

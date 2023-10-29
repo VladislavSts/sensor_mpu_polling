@@ -14,8 +14,6 @@
 extern TX_EVENT_FLAGS_GROUP MyEventGroup;
 extern LineBuffer_c<char, 256> RxBufferUart2;
 
-extern TX_QUEUE TxUsartReceiveQueue;
-
 void USART2_IRQHandler(void)
 {
 	/* обработка прерывания по таймауту на линии */
@@ -23,8 +21,7 @@ void USART2_IRQHandler(void)
 	{
 	    LL_USART_ClearFlag_IDLE(USART2);
 
-	    Command_e Command = Command_e::FULL_DATA_RECEIVED;
-	    tx_queue_send(&TxUsartReceiveQueue, &Command, TX_NO_WAIT);
+	    tx_event_flags_set(&MyEventGroup, (ULONG)Flags_e::FULL_DATA_RECEIVED, TX_OR);
 	    RxBufferUart2.WriteIndex = RxBufferUart2.GetVolume() - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
 
 	    /* Буфер приема пишет всегда с начала, т.к. с адреса Buffer (GetAddressBuffer()) */
