@@ -198,32 +198,32 @@ Error_e MPU6050Sensor::ReadAllData()
 			Data.Gz = Gyro_Z_RAW / 131.0;
 
 			// Kalman angle solve
-//			double dt = (double) (uwTick - timer) / 1000;
-//			timer = uwTick;
-//
-//			double roll;
-//			double roll_sqrt = sqrt(Accel_X_RAW * Accel_X_RAW + Accel_Z_RAW * Accel_Z_RAW);
-//
-//			if (roll_sqrt != 0.0) {
-//				roll = atan(Accel_Y_RAW / roll_sqrt) * RAD_TO_DEG;
-//			} else {
-//				roll = 0.0;
-//			}
-//
-//			double pitch = atan2(-Accel_X_RAW, Accel_Z_RAW) * RAD_TO_DEG;
-//
-//			if ((pitch < -90 && KalmanAngleY > 90) || (pitch > 90 && KalmanAngleY < -90)) {
-//				KalmanY.angle = pitch;
-//				KalmanAngleY = pitch;
-//			}
-//			else {
-//				KalmanAngleY = Kalman_getAngle(&KalmanY, pitch, Data.Gy, dt);
-//			}
-//
-//			if (fabs(KalmanAngleY) > 90) {
-//				Data.Gx = -Data.Gx;
-//			}
-//				KalmanAngleX = Kalman_getAngle(&KalmanX, roll, Data.Gy, dt);
+			double dt = (double) (tx_time_get() - timer) / 1000;
+			timer = tx_time_get();
+
+			double roll;
+			double roll_sqrt = sqrt(Accel_X_RAW * Accel_X_RAW + Accel_Z_RAW * Accel_Z_RAW);
+
+			if (roll_sqrt != 0.0) {
+				roll = atan(Accel_Y_RAW / roll_sqrt) * RAD_TO_DEG;
+			} else {
+				roll = 0.0;
+			}
+
+			double pitch = atan2(-Accel_X_RAW, Accel_Z_RAW) * RAD_TO_DEG;
+
+			if ((pitch < -90 && KalmanAngleY > 90) || (pitch > 90 && KalmanAngleY < -90)) {
+				KalmanY.angle = pitch;
+				KalmanAngleY = pitch;
+			}
+			else {
+				KalmanAngleY = Kalman_getAngle(&KalmanY, pitch, Data.Gy, dt);
+			}
+
+			if (fabs(KalmanAngleY) > 90) {
+				Data.Gx = -Data.Gx;
+			}
+				KalmanAngleX = Kalman_getAngle(&KalmanX, roll, Data.Gy, dt);
 
 			Result = Error_e::OK;
 		}
