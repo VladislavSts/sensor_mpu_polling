@@ -8,25 +8,23 @@
 #pragma once
 
 #include "tx_api.h"
+#include "stdint.h"
 
-#define FLAG(X) (1 << X)
-
-/* флаги для группы флагов событий */
-enum class Flags_e
+enum class Command_e : uint8_t
 {
-	FULL_DATA_RECEIVED	 = 1u,							// данные полностью приняты
-	FULL_DATA_TRANSMIT   = (FULL_DATA_RECEIVED << 1),	// данные полностью отправлены
-	COMMAND_START		 = (FULL_DATA_TRANSMIT << 1),	// пришла команда старт
-	SENSOR_IS_READY		 = (COMMAND_START << 1),		// сенсор инициализирован и готов к работе
-	START_POLLING_SENSOR = (SENSOR_IS_READY << 1),		// запуск опроса сенсора
-	TRANSMIT_DATA_SENSOR = (START_POLLING_SENSOR << 1)	// запуск отправки данных
+	FULL_DATA_RECEIVED,
+	FULL_DATA_TRANSMIT,
+	COMMAND_START,
+	SENSOR_IS_READY,
+	START_POLLING_SENSOR,
+	STOP_POLLING_SENSOR,
+	TRANSMIT_DATA_SENSOR,
 };
 
 #define sleep(X) 	tx_thread_sleep(X)
 #define _sec(X)		(X*1000)
 #define _ms(X)		(X)
 
-extern TX_EVENT_FLAGS_GROUP MyEventGroup;
 extern ULONG actual_events;
 
 
