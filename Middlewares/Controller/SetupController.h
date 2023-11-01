@@ -18,7 +18,7 @@ enum class Command_e : uint8_t
 	SENSOR_IS_READY,
 	START_POLLING_SENSOR,
 	STOP_POLLING_SENSOR,
-	TRANSMIT_DATA_SENSOR,
+	TRANSMIT_DATA_SENSOR
 };
 
 #define sleep(X) 	tx_thread_sleep(X)
@@ -37,3 +37,7 @@ extern TX_QUEUE TxBllinkLedQueue;
 extern TX_QUEUE TxUsartReceiveQueue;
 extern TX_QUEUE TxUsartTransmitQueue;
 extern TX_QUEUE TxPollingSensorQueue;
+
+/* Возможность подключить один сенсор из предложенных на выбор, все будет работать :) */
+#define MPU6050
+//#define ADXL345

@@ -16,6 +16,12 @@ extern Uart_c Usart2;
 extern LineBuffer_c<char, 256> RxBufferUart2;
 extern MPU6050Sensor Mpu;
 
+#ifdef MPU6050
+#define CheckMpuState Mpu.State == State_e::INIT
+#else
+#define CheckMpuState 1
+#endif
+
 VOID UsartReceiveThread(ULONG thread_input)
 {
 	Usart2.Init();
@@ -38,12 +44,12 @@ VOID UsartReceiveThread(ULONG thread_input)
 			}
 
 			CommandRx = RxBufferUart2.FindString("getdata");
-			if (CommandRx == Result_e::OK && Mpu.State == State_e::INIT) {
+			if (CommandRx == Result_e::OK && CheckMpuState) {
 			    SendCommand(TxPollingSensorQueue, Command_e::START_POLLING_SENSOR);
 			}
 
 			CommandRx = RxBufferUart2.FindString("stopdata");
-			if (CommandRx == Result_e::OK && Mpu.State == State_e::INIT) {
+			if (CommandRx == Result_e::OK && CheckMpuState) {
 				SendCommand(TxPollingSensorQueue, Command_e::STOP_POLLING_SENSOR);
 			}
 		}

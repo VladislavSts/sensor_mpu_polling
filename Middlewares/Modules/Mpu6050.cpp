@@ -22,16 +22,18 @@
 
 #define RAD_TO_DEG 57.295779513082320876798154814105
 
+#define CORRECT_ACCEL 2048.0
+#define CORRECT_GYRO  16.4
+
 const double Accel_Z_corrector = 14418.0;
 uint32_t timer;
 
 void MPU6050Sensor::MPU6050_Init()
 {
-	if (State != State_e::INIT) {
+	if (State == State_e::NOT_INIT) {
 		uint8_t check = 0;
 		uint8_t Data = 0;
 
-		I2c.Init();
 		// check device ID WHO_AM_I
 		I2c.MemmoryRead(MPU6050_ADDR, WHO_AM_I_REG, 1, &check, 1);
 
@@ -41,18 +43,18 @@ void MPU6050Sensor::MPU6050_Init()
 			Data = 0;
 			I2c.MemmoryWrite(MPU6050_ADDR, PWR_MGMT_1_REG, 1, &Data, 1);
 
-			// Set DATA RATE of 2KHz by writing SMPLRT_DIV register
-			Data = 0x03;
+			// Set DATA RATE of 1KHz by writing SMPLRT_DIV register
+			Data = 0x07;
 			I2c.MemmoryWrite(MPU6050_ADDR, SMPLRT_DIV_REG, 1, &Data, 1);
 
 			// Set accelerometer configuration in ACCEL_CONFIG Register
-			// XA_ST=0,YA_ST=0,ZA_ST=0, FS_SEL=0 -> � 2g
-			Data = 0x00;
+			// XA_ST=0,YA_ST=0,ZA_ST=0, FS_SEL=0 -> +-16g
+			Data = 0x18;
 			I2c.MemmoryWrite(MPU6050_ADDR, ACCEL_CONFIG_REG, 1, &Data, 1);
 
 			// Set Gyroscopic configuration in GYRO_CONFIG Register
-			// XG_ST=0,YG_ST=0,ZG_ST=0, FS_SEL=0 -> � 250 �/s
-			Data = 0x00;
+			// XG_ST=0,YG_ST=0,ZG_ST=0, FS_SEL=0 -> +-2000*/s
+			Data = 0x18;
 			I2c.MemmoryWrite(MPU6050_ADDR, GYRO_CONFIG_REG, 1, &Data, 1);
 
 			State = State_e::INIT;
@@ -68,7 +70,7 @@ void MPU6050Sensor::MPU6050_Init()
 
 void MPU6050Sensor::MPU6050_DeInit()
 {
-	if (State != State_e::NOT_INIT) {
+	if (State == State_e::INIT) {
 		I2c.DeInit();
 		State = State_e::NOT_INIT;
 	}
@@ -95,9 +97,9 @@ Error_e MPU6050Sensor::MPU6050_Read_Accel()
 				 I have configured FS_SEL = 0. So I am dividing by 16384.0
 				 for more details check ACCEL_CONFIG Register              ****/
 
-			Data.Ax = Accel_X_RAW/16384.0;
-			Data.Ay = Accel_Y_RAW/16384.0;
-			Data.Az = Accel_Z_RAW/16384.0;
+			Data.Ax = Accel_X_RAW/CORRECT_ACCEL;
+			Data.Ay = Accel_Y_RAW/CORRECT_ACCEL;
+			Data.Az = Accel_Z_RAW/CORRECT_ACCEL;
 
 			Result = Error_e::OK;
 		}
@@ -128,9 +130,9 @@ Error_e MPU6050Sensor::MPU6050_Read_Gyro()
 				 I have configured FS_SEL = 0. So I am dividing by 131.0
 				 for more details check GYRO_CONFIG Register              ****/
 
-			Data.Gx = Gyro_X_RAW/131.0;
-			Data.Gy = Gyro_Y_RAW/131.0;
-			Data.Gz = Gyro_Z_RAW/131.0;
+			Data.Gx = Gyro_X_RAW/CORRECT_GYRO;
+			Data.Gy = Gyro_Y_RAW/CORRECT_GYRO;
+			Data.Gz = Gyro_Z_RAW/CORRECT_GYRO;
 
 			Result = Error_e::OK;
 		}
@@ -189,13 +191,15 @@ Error_e MPU6050Sensor::ReadAllData()
 			Gyro_Y_RAW = (int16_t) (Rec_Data[10] << 8 | Rec_Data[11]);
 			Gyro_Z_RAW = (int16_t) (Rec_Data[12] << 8 | Rec_Data[13]);
 
-			Data.Ax = Accel_X_RAW / 16384.0;
-			Data.Ay = Accel_Y_RAW / 16384.0;
-			Data.Az = Accel_Z_RAW / Accel_Z_corrector;
+			Data.Ax = Accel_X_RAW / CORRECT_ACCEL;
+			Data.Ay = Accel_Y_RAW / CORRECT_ACCEL;
+			Data.Az = Accel_Z_RAW / CORRECT_ACCEL;
+
 			Data.Temp = (float) ((int16_t) temp / (float) 340.0 + (float) 36.53);
-			Data.Gx = Gyro_X_RAW / 131.0;
-			Data.Gy = Gyro_Y_RAW / 131.0;
-			Data.Gz = Gyro_Z_RAW / 131.0;
+
+			Data.Gx = Gyro_X_RAW / CORRECT_GYRO;
+			Data.Gy = Gyro_Y_RAW / CORRECT_GYRO;
+			Data.Gz = Gyro_Z_RAW / CORRECT_GYRO;
 
 			// Kalman angle solve
 			double dt = (double) (tx_time_get() - timer) / 1000;
