@@ -41,7 +41,9 @@ VOID PollingSensorThread(ULONG thread_input)
 				case Command_e::COMMAND_START:
 #ifdef MPU6050
 					Mpu.MPU6050_Init();
-					SendCommand(TxUsartTransmitQueue, Command_e::SENSOR_IS_READY);
+					if (Mpu.State == State_e::INIT) {
+						SendCommand(TxUsartTransmitQueue, Command_e::SENSOR_IS_READY);
+					}
 #endif
 #ifdef ADXL345
 					Adxl.Init();
