@@ -216,18 +216,18 @@ Error_e MPU6050Sensor::ReadAllData()
 
 			double pitch = atan2(-Accel_X_RAW, Accel_Z_RAW) * RAD_TO_DEG;
 
-			if ((pitch < -90 && KalmanAngleY > 90) || (pitch > 90 && KalmanAngleY < -90)) {
+			if ((pitch < -90 && Data.KalmanAngleY > 90) || (pitch > 90 && Data.KalmanAngleY < -90)) {
 				KalmanY.angle = pitch;
-				KalmanAngleY = pitch;
+				Data.KalmanAngleY = pitch;
 			}
 			else {
-				KalmanAngleY = Kalman_getAngle(&KalmanY, pitch, Data.Gy, dt);
+				Data.KalmanAngleY = Kalman_getAngle(&KalmanY, pitch, Data.Gy, dt);
 			}
 
-			if (fabs(KalmanAngleY) > 90) {
+			if (fabs(Data.KalmanAngleY) > 90) {
 				Data.Gx = -Data.Gx;
 			}
-				KalmanAngleX = Kalman_getAngle(&KalmanX, roll, Data.Gy, dt);
+			Data.KalmanAngleX = Kalman_getAngle(&KalmanX, roll, Data.Gy, dt);
 
 			Result = Error_e::OK;
 		}

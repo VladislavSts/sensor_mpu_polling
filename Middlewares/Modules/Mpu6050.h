@@ -20,6 +20,9 @@ struct DataMpu {
 	float Gy = 0;
 	float Gz = 0;
 	float Temp = 0;
+
+    double KalmanAngleX;
+    double KalmanAngleY;
 };
 
 // Kalman structure
@@ -44,9 +47,6 @@ private:
 	int16_t Gyro_X_RAW = 0;
 	int16_t Gyro_Y_RAW = 0;
 	int16_t Gyro_Z_RAW = 0;
-
-    double KalmanAngleX;
-    double KalmanAngleY;
 
     Kalman_t KalmanX = {
             .Q_angle = 0.001f,
