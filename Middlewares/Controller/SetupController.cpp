@@ -6,26 +6,27 @@
  */
 
 #include "SetupController.h"
+#include "main.h"
 
 //===============================================================================================//
 /* Размер пула памяти, из которого будет выделяться память для демо-потоков, в байтах */
-#define DEMO_BYTE_POOL_SIZE 8192
+#define     STACK_SIZE         1024
+#define     BYTE_POOL_SIZE     9120
+#define     NUMBER_OF_MESSAGES 100
+#define     MESSAGE_SIZE       TX_1_ULONG
+#define     QUEUE_SIZE         NUMBER_OF_MESSAGES*MESSAGE_SIZE*sizeof(ULONG)
 
 /* Область памяти для пула TX_BYTE_POOL */
-UCHAR MemoryArea[DEMO_BYTE_POOL_SIZE];
+UCHAR MemoryArea[BYTE_POOL_SIZE];
 
 /* Структура, хранящая информацию о пуле памяти */
 TX_BYTE_POOL BytePool;
 
-/* Группа флагов событий */
-TX_EVENT_FLAGS_GROUP MyEventGroup;
-ULONG actual_events;
-
 /* Массив структур, каждая из которых хранит информацию о потоке (thread control block) */
-TX_THREAD TxBlinkLedThread;
-TX_THREAD TxUsartReceiveThread;
-TX_THREAD TxUsartTransmitThread;
-TX_THREAD TxPollingSensorThread;
+TX_THREAD TxBlinkLedThread, TxUsartReceiveThread, TxUsartTransmitThread, TxPollingSensorThread;
+
+/* Очереди */
+TX_QUEUE TxBllinkLedQueue, TxUsartReceiveQueue, TxUsartTransmitQueue, TxPollingSensorQueue;
 
 VOID BlinkLedThread(ULONG thread_input);
 VOID UsartReceiveThread(ULONG thread_input);
@@ -35,21 +36,37 @@ VOID PollingSensorThread(ULONG thread_input);
 //===============================================================================================//
 void tx_application_define(void *first_unused_memory)
 {
+	UINT ResultRequest;
+
 /* Указатели на память для стека каждого потока */
 	CHAR *BlinkLed, *UsartReceive, *UsartTransmit, *PollingSensor;
 
-/* Создаем byte memory pool, из которого будем выделять память для стека каждого потока */
-	tx_byte_pool_create(&BytePool, (char*)"byte_pool", MemoryArea, DEMO_BYTE_POOL_SIZE);
+	CHAR *BllinkLedQueue, *UsartReceiveQueue, *UsartTransmitQueue, *PollingSensorQueue;
 
-// СОЗДАНИЕ ГРУППЫ ФЛАГОВ СОБЫТИЙ
-	tx_event_flags_create(&MyEventGroup, (CHAR*)"FullDataReceived");
+/* Создаем byte memory pool, из которого будем выделять память для стека каждого потока */
+	tx_byte_pool_create(&BytePool, (char*)"byte_pool", MemoryArea, BYTE_POOL_SIZE);
 
 // ВЫДЕЛЕНИЕ СТЕКА ДЛЯ ПОТОКОВ
-	tx_byte_allocate(&BytePool, (VOID**) &BlinkLed, 		1024, TX_NO_WAIT);
-	tx_byte_allocate(&BytePool, (VOID**) &UsartReceive, 	1024, TX_NO_WAIT);
-	tx_byte_allocate(&BytePool, (VOID**) &UsartTransmit, 	1024, TX_NO_WAIT);
-	tx_byte_allocate(&BytePool, (VOID**) &UsartTransmit, 	1024, TX_NO_WAIT);
-	tx_byte_allocate(&BytePool, (VOID**) &PollingSensor, 	1024, TX_NO_WAIT);
+	tx_byte_allocate(&BytePool, (VOID**) &BlinkLed, 		STACK_SIZE, TX_NO_WAIT);
+	tx_byte_allocate(&BytePool, (VOID**) &UsartReceive, 	STACK_SIZE, TX_NO_WAIT);
+	tx_byte_allocate(&BytePool, (VOID**) &UsartTransmit, 	STACK_SIZE, TX_NO_WAIT);
+	tx_byte_allocate(&BytePool, (VOID**) &PollingSensor, 	STACK_SIZE, TX_NO_WAIT);
+
+// ВЫДЕЛЕНИЕ СТЕКА ДЛЯ ОЧЕРЕДЕЙ
+	tx_byte_allocate(&BytePool, (VOID**)&BllinkLedQueue, 		QUEUE_SIZE, TX_NO_WAIT);
+	tx_byte_allocate(&BytePool, (VOID**)&UsartReceiveQueue, 	QUEUE_SIZE, TX_NO_WAIT);
+	tx_byte_allocate(&BytePool, (VOID**)&UsartTransmitQueue, 	QUEUE_SIZE, TX_NO_WAIT);
+	tx_byte_allocate(&BytePool, (VOID**)&PollingSensorQueue, 	QUEUE_SIZE, TX_NO_WAIT);
+
+// СОЗДАНИЕ ОЧЕРЕДЕЙ
+	ResultRequest = tx_queue_create(&TxBllinkLedQueue, 		(CHAR*)"TxBllinkLedQueue", 	   MESSAGE_SIZE, (VOID**)&BllinkLedQueue, 	  QUEUE_SIZE);
+	ResultRequest = tx_queue_create(&TxUsartReceiveQueue, 	(CHAR*)"TxUsartReceiveQueue",  MESSAGE_SIZE, (VOID**)&UsartReceiveQueue,  QUEUE_SIZE);
+	ResultRequest = tx_queue_create(&TxUsartTransmitQueue, 	(CHAR*)"TxUsartTransmitQueue", MESSAGE_SIZE, (VOID**)&UsartTransmitQueue, QUEUE_SIZE);
+	ResultRequest = tx_queue_create(&TxPollingSensorQueue, 	(CHAR*)"TxPollingSensorQueue", MESSAGE_SIZE, (VOID**)&PollingSensorQueue, QUEUE_SIZE);
+
+	if (ResultRequest != TX_SUCCESS) {
+		Error_Handler();
+	}
 
 // СОЗДАНИЕ ПОТОКОВ
 	tx_thread_create(&TxBlinkLedThread, (char*)"TxBlinkLedThread", BlinkLedThread, 1,

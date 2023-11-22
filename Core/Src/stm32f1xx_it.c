@@ -175,11 +175,6 @@ void DebugMon_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles DMA1 channel6 global interrupt.
-  */
-
-
-/**
   * @brief This function handles TIM4 global interrupt.
   */
 void TIM4_IRQHandler(void)
@@ -220,7 +215,6 @@ void I2C1_ER_IRQHandler(void)
 
   /* USER CODE END I2C1_ER_IRQn 1 */
 }
-
 
 /* USER CODE BEGIN 1 */
 
