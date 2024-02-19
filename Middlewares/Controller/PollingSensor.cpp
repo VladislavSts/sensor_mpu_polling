@@ -42,12 +42,12 @@ VOID PollingSensorThread(ULONG thread_input)
 #ifdef MPU6050
 					Mpu.MPU6050_Init();
 					if (Mpu.State == State_e::INIT) {
-						SendCommand(TxUsartTransmitQueue, Command_e::SENSOR_IS_READY);
+						SendCommand(TxUsartQueue, Command_e::SENSOR_IS_READY);
 					}
 #endif
 #ifdef ADXL345
 					Adxl.Init();
-					SendCommand(TxUsartTransmitQueue, Command_e::SENSOR_IS_READY);
+					SendCommand(TxUsartQueue, Command_e::SENSOR_IS_READY);
 #endif
 					break;
 
@@ -75,11 +75,11 @@ VOID PollingSensorThread(ULONG thread_input)
 				Error_e Result;
 				Result = Mpu.ReadAllData();
 				if (Result == Error_e::OK)
-					SendCommand(TxUsartTransmitQueue, Command_e::TRANSMIT_DATA_SENSOR);
+					SendCommand(TxUsartQueue, Command_e::TRANSMIT_DATA_SENSOR);
 #endif
 #ifdef ADXL345
 				Adxl.ReadValues (0x32);
-				SendCommand(TxUsartTransmitQueue, Command_e::TRANSMIT_DATA_SENSOR);
+				SendCommand(TxUsartQueue, Command_e::TRANSMIT_DATA_SENSOR);
 #endif
 			}
 		}
