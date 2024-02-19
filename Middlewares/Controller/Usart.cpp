@@ -1,34 +1,45 @@
 /*
- * UsartTransmit.cpp
+ * UsartReceive.cpp
  *
  *  Created on: Oct 8, 2023
  *      Author: Vladislav
  */
 
 #include "main.h"
+#include "BspUart.h"
 #include "SetupController.h"
 #include "Buffer.h"
-#include <stdio.h>
-#include <string.h>
 #include "Mpu6050.h"
-#include "Adxl345.h"
+#include <string.h>
 
+extern Uart_c Usart2;
+extern LineBuffer_c<char, 256> RxBufferUart2;
 extern LineBuffer_c<char, 256> TxBufferUart2;
+extern MPU6050Sensor Mpu;
 extern DataMpu MpuData;
-extern DataAdxl AdxlData;
 
-VOID UsartTransmitThread(ULONG thread_input)
+#ifdef MPU6050
+#define CheckMpuState Mpu.State == State_e::INIT
+#else
+#define CheckMpuState 1
+#endif
+
+VOID UsartThread(ULONG thread_input)
 {
-    TxBufferUart2.Clear();
-    UINT Result;
-    Command_e Command;
+	Usart2.Init();
+	RxBufferUart2.Clear();
+
+	UINT Result;
+	Command_e Command;
+	Result_e CommandRx = Result_e::ERROR;
 
 	while (1)
 	{
-		Result = tx_queue_receive(&TxUsartTransmitQueue, &Command, TX_WAIT_FOREVER);
+		Result = tx_queue_receive(&TxUsartQueue, &Command, TX_WAIT_FOREVER);
 
 		if (Result == TX_SUCCESS)
 		{
+			/* Обработка полученной команды */
 			switch(Command)
 			{
 				case Command_e::SENSOR_IS_READY: {
@@ -55,10 +66,30 @@ VOID UsartTransmitThread(ULONG thread_input)
 					break;
 				}
 
+				case Command_e::FULL_DATA_RECEIVED:
+					/* Приняты все данные - разбираем команду */
+					CommandRx = RxBufferUart2.FindString("start");
+					if (CommandRx == Result_e::OK) {
+					    SendCommand(TxPollingSensorQueue, Command_e::COMMAND_START);
+					}
+
+					CommandRx = RxBufferUart2.FindString("getdata");
+					if (CommandRx == Result_e::OK && CheckMpuState) {
+					    SendCommand(TxPollingSensorQueue, Command_e::START_POLLING_SENSOR);
+					}
+
+					CommandRx = RxBufferUart2.FindString("stopdata");
+					if (CommandRx == Result_e::OK && CheckMpuState) {
+						SendCommand(TxPollingSensorQueue, Command_e::STOP_POLLING_SENSOR);
+					}
+					break;
+
 				default:
 					;
 
 			}
+
+
 		}
 	}
 }
