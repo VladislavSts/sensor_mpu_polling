@@ -34,7 +34,8 @@ extern ULONG actual_events;
     } while(0)
 
 extern TX_QUEUE TxBllinkLedQueue;
-extern TX_QUEUE TxUsartQueue;
+extern TX_QUEUE TxUsartReceiveQueue;
+extern TX_QUEUE TxUsartTransmitQueue;
 extern TX_QUEUE TxPollingSensorQueue;
 
 /* Возможность подключить один сенсор из предложенных на выбор, все будет работать :) */

@@ -24,7 +24,7 @@ void USART2_IRQHandler(void)
 	    LL_USART_ClearFlag_IDLE(USART2);
 
 	    Command_e Command = Command_e::FULL_DATA_RECEIVED;
-	    tx_queue_send(&TxUsartQueue, &Command, TX_NO_WAIT);
+	    tx_queue_send(&TxUsartReceiveQueue, &Command, TX_NO_WAIT);
 	    RxBufferUart2.WriteIndex = RxBufferUart2.GetVolume() - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
 
 	    /* Буфер приема пишет всегда с начала, т.к. с адреса Buffer (GetAddressBuffer()) */
