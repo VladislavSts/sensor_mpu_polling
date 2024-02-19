@@ -1,5 +1,5 @@
 /*
- * UsartReceive.cpp
+ * Usart.cpp
  *
  *  Created on: Oct 8, 2023
  *      Author: Vladislav
@@ -88,8 +88,6 @@ VOID UsartThread(ULONG thread_input)
 					;
 
 			}
-
-
 		}
 	}
 }
