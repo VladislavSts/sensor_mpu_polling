@@ -1,3 +1,5 @@
-Debug/*
-build/*
-/Debug/
+Debug/
+Release/
+.vscode/
+.settings/
+
